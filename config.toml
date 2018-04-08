@@ -1,0 +1,29 @@
+baseurl = "delonshen.github.io/"
+languageCode = "en-us"
+title = "Delon Shen"
+theme = "hugo-classic"
+googleAnalytics = ""
+ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+preserveTaxonomyNames = true
+enableEmoji = true
+footnotereturnlinkcontents = "↩"
+
+[permalinks]
+    post = "/post/:year/:month/:day/:slug/"
+
+[[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+[[menu.main]]
+    name = "Blog"
+    url = "/post/"
+    weight = 3
+[[menu.feed]]
+    name = "Subscribe"
+    url = "/index.xml"
+
+[params]
+    description = "Personal Sige for Delon Shen"
+    footer = "[Github](https://github.com/delonshen)"
+    custom_css = ["css/theme-override.css"]
