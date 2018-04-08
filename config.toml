@@ -1,4 +1,4 @@
-baseurl = "delonshen.github.io/"
+baseurl = "https://delonshenblog.netlify.com/"
 languageCode = "en-us"
 title = "Delon Shen"
 theme = "hugo-classic"
