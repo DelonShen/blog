@@ -1,5 +1,5 @@
 ---
-title: Home
+title: home
 ---
 
 
@@ -10,4 +10,4 @@ title: Home
 
 
 
-### Blog
+### blog

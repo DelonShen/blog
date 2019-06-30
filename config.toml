@@ -1,6 +1,6 @@
 baseurl = "https://delonshenblog.netlify.com/"
 languageCode = "en-us"
-title = "Delon Shen"
+title = "delon shen"
 theme = "hugo-classic"
 googleAnalytics = ""
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
@@ -19,11 +19,15 @@ footnotereturnlinkcontents = "↩"
     name = "Blog"
     url = "/post/"
     weight = 3
+[[menu.main]]
+    name = "Notes"
+    url = "/notes/"
+    weight = 3
 [[menu.feed]]
     name = "Subscribe"
     url = "/index.xml"
 
 [params]
-    description = "Personal Sige for Delon Shen"
-    footer = "[Github](https://github.com/delonshen)"
+    description = "delon shen"
+    footer = "[github](https://github.com/delonshen)"
     custom_css = ["css/theme-override.css"]
