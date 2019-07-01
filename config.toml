@@ -29,5 +29,5 @@ footnotereturnlinkcontents = "↩"
 
 [params]
     description = "delon shen"
-    footer = "[github](https://github.com/delonshen)"
+    footer = "[github](https://github.com/delonshen) | [email](mailto:hi@delonshen.com)"
     custom_css = ["css/theme-override.css"]
