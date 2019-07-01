@@ -1,0 +1,69 @@
+---
+title: Introduction to Algorithms(CLRS) Notes
+---
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Delon Shen" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#chapter-1">Chapter 1</a><ul>
+<li><a href="#algorithms">Algorithms</a><ul>
+<li><a href="#exercises">Exercises</a></li>
+</ul></li>
+<li><a href="#algorithms-as-a-technology">Algorithms as a technology</a><ul>
+<li><a href="#exercises-1">Exercises</a></li>
+</ul></li>
+<li><a href="#problems">Problems</a></li>
+</ul></li>
+<li><a href="#revision-history">Revision History</a></li>
+</ul>
+</div>
+<h1 id="chapter-1">Chapter 1</h1>
+<h2 id="algorithms">Algorithms</h2>
+<p>An <strong>algorithm</strong> is something that transforms an input into an output through a sequence of computational steps that solves a <strong>computational problem</strong>. An example of a computational problem is the sorting problem. An <strong>instance</strong> of the sorting problem is to sort the sequence (3,5,74,2,1,23,5). A algorithm is defined as correct if the algorithm <em>always halts on the correct output and doesn’t halt on any inputs.</em><br />
+Problems Solved by Algorithms</p>
+<ul>
+<li><p>Sequencing genomes</p></li>
+<li><p>Information retrieval (internet)</p></li>
+<li><p>Securing personal information (cryptography)</p></li>
+<li><p>Allocating resources (linear programming)</p></li>
+<li><p>Shortest path</p></li>
+<li><p>Longest common sub-sequence</p></li>
+<li><p>Topological sorting</p></li>
+<li><p>Finding smallest convex polygon containing points</p></li>
+</ul>
+<p>A <strong>data structure</strong> is way to organize data to help with retrieval and modification.<br />
+<strong>NP-complete</strong> problems are problems with no known efficient solutions. They’re interesting since there is no proof that an efficient algorithm doesn’t exisist for NP-complete problems, if an efficient algorithm is found for one NP-complete problem then there is an efficient algorithm for all NP-complete problems, and many NP-complete problems are problems that we know efficient algorithms for but are slightly modified. An example of a NP-complete problem is the <a href="https://simple.wikipedia.org/wiki/Travelling_salesman_problem"><strong>Travelling Salesman Problem.</strong></a></p>
+<h3 id="exercises">Exercises</h3>
+<p>1.1-1. In self driving cars, computing the convex hull of other cars may help with collision avoidance<br />
+1.1-2. Memory<br />
+1.1-3. <a href="https://en.wikipedia.org/wiki/Bogosort">Bogosort</a> is very good at always sorting sequences but it is very slow.<br />
+1.1-4. Both rely try to find the shortest path but traveling-salesman has a lot more stops to make.<br />
+1.1-5. An algorithm to divide a number by 3 needs best solution. An algorithm to determine risk of diabetes can be approximate.</p>
+<h2 id="algorithms-as-a-technology">Algorithms as a technology</h2>
+<p>Even if our computers were infinitely fast and memory was infinite and free somehow, we’d still want to study algorithms to understand whether they were correct or not.<br />
+<br />
+Insertion sort takes time roughly <span class="math inline">\(c_1n^2\)</span> while merge sort takes time roughly <span class="math inline">\(c_2nlog_2(n)\)</span>. Lets compare the two algorithms by running insertion sort on computer A which does <span class="math inline">\(10^{10}\)</span> instructions per second while running merge sort on computer B which does <span class="math inline">\(10^{7}\)</span> instructions per second on an input of the size <span class="math inline">\(10^7\)</span>. Also lets assume <span class="math inline">\(c_1\)</span> (the constant term in insertion sort’s running time) is 2 since Donald Knuth programmed insertion sort in <a href="https://en.wikipedia.org/wiki/MMIX">MMIX</a> and <span class="math inline">\(c_2\)</span> (constant term in merge sort’s running time) is 50 since my cat coded merge sort in <a href="https://scratch.mit.edu/">scratch</a>.<br />
+<strong>Computer A Running Insertion Sort Analysis</strong> <span class="math display">\[\frac{2\cdot(10^7)^2\text{ instructions}}{10^{10}\text{ instructions/second}}=20,000\text{ seconds or about 5.56 hours}\]</span> <strong>Computer B Running Merge Sort Analysis</strong> <span class="math display">\[\frac{50\cdot(10^7)log_2(10^7)\text{ instructions}}{10^{7}\text{ instructions/second}}=1163 \text{ seconds or about 19.4 minutes}\]</span></p>
+<p>It’s pretty clear that even though computer B is much slower than computer A (1000 times slower in fact) and merge sort was coded more inefficiently, it still won out in the end due to it’s behavior. <em>As the problem size increases, merge sort’s advantage over insertion sort is magnified.</em></p>
+<h3 id="exercises-1">Exercises</h3>
+<p>1.2-1. Google maps needs to find the shortest path.<br />
+1.2-2. <span class="math inline">\(8n^2&lt;64nlgn\Rightarrow\)</span> By wolfram alpha <span class="math inline">\( n \approx 43\)</span><br />
+1.2-3. <span class="math inline">\(100n^2&lt;2^n\Rightarrow\)</span> By wolfram alpha <span class="math inline">\(n=15\)</span></p>
+<h2 id="problems">Problems</h2>
+<p>1-1. Just solve for n in <span class="math inline">\(f(n)= t\text{ seconds}* 10^{6}\)</span> to fill in chart. e.g. <span class="math display">\[n^2=60 \text{ seconds} * 10^6\]</span> <span class="math display">\[n=7745.966\]</span></p>
+<h1 id="revision-history">Revision History</h1>
+<p>06-30-2019: Initial Commit<br />
+07-31-2019: Chapter 1 Added<br />
+</p>
+</body>
+</html>
