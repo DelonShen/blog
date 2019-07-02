@@ -1,6 +1,6 @@
 baseurl = "https://delonshenblog.netlify.com/"
 languageCode = "en-us"
-title = "delon shen"
+title = "Delon Shen"
 theme = "hugo-classic"
 googleAnalytics = ""
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
@@ -28,6 +28,6 @@ footnotereturnlinkcontents = "↩"
     url = "/index.xml"
 
 [params]
-    description = "delon shen"
+    description = "Delon Shen"
     footer = "[github](https://github.com/delonshen) | [email](mailto:hi@delonshen.com)"
     custom_css = ["css/theme-override.css"]
