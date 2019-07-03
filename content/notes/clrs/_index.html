@@ -15,7 +15,7 @@ title: Introduction to Algorithms(CLRS) Notes
 <body>
 <div id="TOC">
 <ul>
-<li><a href="#chapter-1">Chapter 1</a><ul>
+<li><a href="#chapter-1-role-of-algorithms-in-computing">Chapter 1: Role of Algorithms in Computing</a><ul>
 <li><a href="#algorithms">Algorithms</a><ul>
 <li><a href="#exercises">Exercises</a></li>
 </ul></li>
@@ -24,16 +24,20 @@ title: Introduction to Algorithms(CLRS) Notes
 </ul></li>
 <li><a href="#problems">Problems</a></li>
 </ul></li>
-<li><a href="#chapter-2">Chapter 2</a><ul>
+<li><a href="#chapter-2-getting-started">Chapter 2: Getting Started</a><ul>
 <li><a href="#insertion-sort">Insertion Sort</a><ul>
 <li><a href="#insertion-sort-in-c">Insertion Sort in C++</a></li>
 <li><a href="#exercises-2">Exercises</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</a><ul>
+<li><a href="#representing-polynomials">Representing polynomials</a></li>
+</ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
 </div>
-<h1 id="chapter-1">Chapter 1</h1>
+<p><em>Note: I was originally planning on going cover to cover but decided that skipping around would be more fun.</em></p>
+<h1 id="chapter-1-role-of-algorithms-in-computing">Chapter 1: Role of Algorithms in Computing</h1>
 <h2 id="algorithms">Algorithms</h2>
 <p>An <strong>algorithm</strong> is something that transforms an input into an output through a sequence of computational steps that solves a <strong>computational problem</strong>. An example of a computational problem is the sorting problem. An <strong>instance</strong> of the sorting problem is to sort the sequence (3,5,74,2,1,23,5). A algorithm is defined as correct if the algorithm <em>always halts on the correct output and doesn’t halt on any inputs.</em><br />
 Problems Solved by Algorithms</p>
@@ -67,7 +71,7 @@ Insertion sort takes time roughly <span class="math inline">\(c_1n^2\)</span> wh
 <strong>1.2-3.</strong> <span class="math inline">\(100n^2&lt;2^n\Rightarrow\)</span> By wolfram alpha <span class="math inline">\(n=15\)</span></p>
 <h2 id="problems">Problems</h2>
 <p><strong>1-1.</strong> Just solve for n in <span class="math inline">\(f(n)= t\text{ seconds}* 10^{6}\)</span> to fill in chart. e.g. <span class="math display">\[n^2=60 \text{ seconds} * 10^6\]</span> <span class="math display">\[n=7745.966\]</span></p>
-<h1 id="chapter-2">Chapter 2</h1>
+<h1 id="chapter-2-getting-started">Chapter 2: Getting Started</h1>
 <h2 id="insertion-sort">Insertion Sort</h2>
 <p><strong>Insertion sort</strong> works similar to how most people sort a hand of playing cards. We start by looking at the second card and seeing if it’s greater than or less than the first card. If it’s greater than, we leave it where it is. If it’s less than, we insert if before the first card. Afterwards we look at the third card and insert it properly into the sequence of the first two cards so that now the first three cards are properly sorted. This process continues for all the cards.</p>
 <p><em>Example: sort the sequence (6,9,3,5)</em><br />
@@ -150,10 +154,45 @@ At every iteration, the subarry from index 0 to x-1 is sorted. We’ll call this
   C[0]=carry;
   return C;
 }</code></pre>
+<h1 id="chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</h1>
+<p>The fast Fourier transform reduced the complexity of multiplying together two polynomials from <span class="math inline">\(\Theta(n^2)\)</span> to <span class="math inline">\(\Theta(nlgn)\)</span>. <a href="https://www.youtube.com/watch?v=spUNpyF58BY">Neat introduction to fourier series</a>.<br />
+<strong>Polynomial</strong><span class="math display">\[A(x)=a_0+a_1x+a_2x^2+a_3x^3...a_{n-1}x^{n-1}=\sum_{j=0}^{n-1}a_jx^j=&lt;a_0, a_1,..,a_{n-1}&gt;\]</span> Things you might want to do with polynomials:</p>
+<ul>
+<li><p>Evaluate A(x) at <span class="math inline">\(x_0\)</span></p>
+<ul>
+<li><p>Naively you could compute x for every term but that would be quadratice time</p></li>
+<li><p>Or you could use <strong>Horner’s Rule</strong>: <span class="math inline">\(A(x)=a_0+x(a_1+x(a_2+...x(a_{n-1})))\)</span> giving linear time</p></li>
+</ul></li>
+<li><p>Add polynomials: A(x)+B(x)=C(x)</p>
+<ul>
+<li><p><span class="math inline">\(c_k=a_k+b_k\)</span>, linear time</p></li>
+</ul></li>
+<li><p>Multiply polynomials A(x)B(x)=C(x)</p>
+<ul>
+<li><p><span class="math inline">\(c_k=\sum_{j=0}^ka_jb_{k-j}\)</span> which is O(<span class="math inline">\(n^2\)</span>)</p></li>
+<li><p>This is why we like FFT</p></li>
+</ul></li>
+</ul>
+<h2 id="representing-polynomials">Representing polynomials</h2>
+<p><strong>Coefficient representation</strong> of <span class="math inline">\(A(x)=\sum_{j=0}^{n-1}a_jx^j\)</span> As we showed before you can evaluate this easily using Horner’s rule and adding is trivial. Multiplying however is rough, <span class="math inline">\(\Theta(n^2)\)</span>. The resulting coefficient vector is also called the <strong>convolution</strong> of vectors a and b, the two vectors we’re multiplying.<br />
+<strong>Point-value representaiton</strong> of A(x) of degree-bound n is a set of n <strong>point-value pairs.</strong> <span class="math display">\[\{(x_0,y_0),(x_1,y_1),...(x_{n-1},y_{n-1})\}\]</span> where <span class="math inline">\(x_k\)</span> are distinct and <span class="math inline">\(y_k=A(x_k)\)</span>.<br />
+So we want if we want to find the polynomical representation of this point-value pair we’d want it to satisfy <span class="math inline">\(y_k=A(x_k)\)</span>, in other words <span class="math display">\[a_0x_0+a_1x_0^2+a_3x_0^3+a_4x_0^4+...+a_{n-1}x_0^{n-1}=A(x_0)=y_0\]</span> <span class="math display">\[a_0x_1+a_1x_1^2+a_3x_1^3+a_4x_1^4+...+a_{n-1}x_1^{n-1}=A(x_1)=y_1\]</span> <span class="math display">\[a_0x_2+a_1x_2^2+a_3x_2^3+a_4x_2^4+...+a_{n-1}x_2^{n-1}=A(x_2)=y_2\]</span> <span class="math display">\[. . .\]</span> <span class="math display">\[a_0x_{n-1}+a_1x_{n-1}^2+a_3x_{n-1}^3+a_4x_{n-1}^4+...+a_{n-1}x_{n-1}^{n-1}=A(x_{n-1})=y_{n-1}\]</span> In this form it is pretty simple to see the matrix representation of this system of equations as <span class="math display">\[\begin{bmatrix}
+  1 &amp; x_0 &amp; x_0^2 &amp; ... &amp; x_0^{n-1}\\1 &amp; x_1 &amp; x_1^2 &amp; ... &amp;x_1^{n-1}\\ \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ 1 &amp; x_{n-1} &amp; x_{n-1}^2 &amp; ... &amp; x_{n-1}^{n-1}
+
+&amp;\end{bmatrix}
+\begin{bmatrix}
+  a_0 \\ a_1 \\ \vdots \\ a_{n-1}
+\end{bmatrix}
+=
+\begin{bmatrix}
+  y_0 \\ y_1 \\ \vdots \\ y_{n-1}
+\end{bmatrix}\]</span> The left most matrix is known as the Vandermonde matrix, V, in which <span class="math inline">\(V_{jk} = x_j^k\)</span>. In this form we can see the transformation from coefficient representation to point-value representation as simply a matrix multiplication that will take <span class="math inline">\(O(n^2)\)</span>. In this form we can also see the transformation from point-value representation to coefficient representation as solving a system of linear equations. In math we would multiply by the inverse but since this is CS we’d have to use <a href="https://cp-algorithms.com/linear_algebra/linear-system-gauss.html"><strong>gaussian elimination!</strong></a> This is unfortunately <span class="math inline">\(O(n^3)\)</span> though but it does prove that there is a unique coefficient representation. <em>Note: there is a different proof in the book for the fact that there is a unique coefficient representation but this way made more sense to me. It is less rigorous though.</em><br />
+In point-value representation, addition and multiplication is simply O(n). For example. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{n-1}, y_{n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{n-1}, y&#39;_{n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{n-1}, y_{n-1}+y&#39;_{n-1})\}\]</span> For multiplying polynomials we must take into account that the degree-bound of the resulting polynomial is the degree(A)+degree(B) where A and B are the two inputs. Therefore we must make sure that we have a “extended” point value represention of A and B with 2n point value pairs to make sure we have a unique polynomial of degree bound 2n. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{2n-1}, y_{2n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{2n-1}, y&#39;_{2n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{2n-1}, y_{2n-1}y&#39;_{2n-1})\}\]</span> The time is still <span class="math inline">\(O(n)\)</span> however.</p>
 <h1 id="revision-history">Revision History</h1>
 <p>06-30-2019: Initial Commit<br />
 07-01-2019: Chapter 1 Added<br />
 07-02-2019: Chapter 2.1 Added<br />
+07-03-2019: part of Chapter 30.1 added<br />
 </p>
 <p><br />
 <br />
