@@ -34,6 +34,7 @@ title: Introduction to Algorithms(CLRS) Notes
 <li><a href="#representing-polynomials">Representing polynomials</a></li>
 <li><a href="#the-dft-and-fft">The DFT and FFT</a><ul>
 <li><a href="#roots-of-unity">Roots of Unity</a></li>
+<li><a href="#inverse-fast-fourier-transform">Inverse Fast Fourier Transform</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#revision-history">Revision History</a></li>
@@ -158,7 +159,7 @@ At every iteration, the subarry from index 0 to x-1 is sorted. We’ll call this
   return C;
 }</code></pre>
 <h1 id="chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</h1>
-<p>The fast Fourier transform reduced the complexity of multiplying together two polynomials from <span class="math inline">\(\Theta(n^2)\)</span> to <span class="math inline">\(\Theta(nlgn)\)</span>. <a href="https://www.youtube.com/watch?v=spUNpyF58BY">Neat introduction to fourier transfrom</a>.<br />
+<p>The fast Fourier transform reduced the complexity of multiplying together two polynomials from <span class="math inline">\(\Theta(n^2)\)</span> to <span class="math inline">\(\Theta(nlgn)\)</span>. <a href="https://www.youtube.com/watch?v=spUNpyF58BY">Neat introduction to fourier transform</a>.<br />
 <strong>Polynomial</strong><span class="math display">\[A(x)=a_0+a_1x+a_2x^2+a_3x^3...a_{n-1}x^{n-1}=\sum_{j=0}^{n-1}a_jx^j=&lt;a_0, a_1,..,a_{n-1}&gt;\]</span> Things you might want to do with polynomials:</p>
 <ul>
 <li><p>Evaluate A(x) at <span class="math inline">\(x_0\)</span></p>
@@ -212,6 +213,17 @@ So the goal of our algorithm is to compute A(x) for <span class="math inline">\(
 <br />
 The algorithm isn’t great and it’s because this <span class="math inline">\(|X|\)</span> term remains the same. We should notice that if <span class="math inline">\(|X|\)</span> <strong>collapsed</strong> for each subproblem, that is <span class="math inline">\(|X^2|=\frac {|X|} 2\)</span>, or <span class="math inline">\(|X|\)</span> was halved along with n and at each division step, then the recurrence relation would simply be <span class="math display">\[T(n)=2T(\frac n 2)+O(n)\]</span> It is easy to see that this means <span class="math inline">\(T(n)=O(nlgn)\)</span>. We can achieve this feature of “collapsing” by choosing our <span class="math inline">\(x_k\)</span> values very carefully by utilizing <strong>Roots of Unity</strong>.</p>
 <h3 id="roots-of-unity">Roots of Unity</h3>
+<p>We can construct a collapsing set with the power of square roots. For example, the <span class="math inline">\(X^2\)</span> is collapsing if <span class="math inline">\(X=\{1, -1\}\)</span>. And this set in turn is the <span class="math inline">\(X^2\)</span> set of <span class="math inline">\(\{1,-1,i,-i\}\)</span>. All of these points are spaced out evenly on the unit circle in the complex plane. We can find larger sets with this collapsing property by utilizing the equation <span class="math display">\[cos(\theta)+isin(\theta)=e^{i\theta}\]</span> with <span class="math display">\[\theta=2k\pi/n, k=0,1,2,...,n-1\]</span> From the equation <span class="math inline">\(e^{i\theta}\)</span> we can see that if we square a number we simply double the angle on the unit cirlce since <span class="math inline">\((e^{i\theta})^2=e^{i2\theta}\)</span>. However what if we double an angle if it’s bigger than <span class="math inline">\(\pi\)</span>? We would have gone around the entire circle and passed <span class="math inline">\(\theta=0\)</span>. In otherwords <span class="math inline">\(2\cdot \frac{3\pi}{2}=3\pi=\pi\)</span>. This lets us see that <span class="math inline">\((e^{i\theta})^2\)</span> actually equals <span class="math inline">\(e^{i2\theta\text{ mod }2\pi}\)</span> which gives the set of roots of unity the collapsing feature. For example, in the set <span class="math inline">\(X=\{1,-1,i,-i\}\)</span> we can figure out the angles to be <span class="math inline">\(\{0,\pi,\pi/2,3\pi/2\}\)</span> from Euler’s formula. But once we double the angles(aka finding the set <span class="math inline">\(X^2\)</span>) we get the set of angles of <span class="math inline">\(\{0, 2\pi, \pi, 3\pi\}=\{0,0,\pi,\pi\}\)</span>.<br />
+<br />
+From all this we can see that setting <span class="math inline">\(x_k=e^{i2\pi k/n}\)</span> gives us a collapsing <span class="math inline">\(X\)</span> set thus giving <span class="math inline">\(O(nlgn)\)</span> conversion from coefficient representation to point-value representation. <em>The Fast Fourier Transform is simply the divide and conquer algorithm we previously described with this special set of <span class="math inline">\(x_k\)</span> that we have chosen</em> Now all we have to do is figure out how to convert from point-value representation to coefficient representation efficiently and we’ll have a fast polynomial multiplication algorithm. But before we find the inverse transform lets summarize and introduce some notation to make our life easier. Fast polynomial multiplication can be summarized as<br />
+We want to multiply two polynomials, A and B store the result in C. <span class="math display">\[A^*=FFT(A)\]</span> <span class="math display">\[B^*=FFT(B)\]</span> <span class="math display">\[C^*_k=A^*_kB^*_k\forall k\]</span> <span class="math display">\[C=IFFT(C^*)\]</span> Where IFFT is the inverse fast fourier transform. As we will see, this is very similar to the FFT.<br />
+<br />
+</p>
+<h3 id="inverse-fast-fourier-transform">Inverse Fast Fourier Transform</h3>
+<p>So converting from coefficient to point-value representation is simply the matrix product of the V, the Vandermonde matrix, and a, the coefficient matrix which we simplified with the FFT. The inverse FFT then is simply multiplying by <span class="math inline">\(V^{-1}\)</span>. This is pretty simple to see: <span class="math display">\[V^{-1}(V A)=V^{-1}A^*\]</span> <span class="math display">\[A=V^{-1}A\]</span> Luckily, <span class="math inline">\(V^{-1}\)</span> has a special form: <span class="math display">\[V^{-1}=\bar{V}/n\]</span> where <span class="math inline">\(\bar{V}\)</span> is the complex conjugate of V. Recall that <span class="math inline">\(V_{jk}=x_j^k=e^{ijk2\pi/n}\)</span> and the complex conjugate of <span class="math inline">\(e^{ijk2\pi/n}\)</span> is <span class="math inline">\(e^{-ijk2\pi/n}\)</span>. Thus we have the equation for the Inverse FFT: <span class="math display">\[(nV^{-1})A^*=nA\]</span> Now all there is to do is prove that neat formula for <span class="math inline">\(V^{-1}\)</span> and we’ll have a <span class="math inline">\(O(nlgn)\)</span> algorithm for polynomial multiplication.<br />
+<br />
+<strong>Prove that <span class="math inline">\(V^{-1}=\bar{V}/n\)</span></strong><br />
+To do this we will prove that <span class="math inline">\(V\bar{V}=nI\)</span> where I is the identity matrix.</p>
 <h1 id="revision-history">Revision History</h1>
 <p>06-30-2019: Initial Commit<br />
 07-01-2019: Chapter 1 Added<br />
