@@ -15,149 +15,18 @@ title: Introduction to Algorithms(CLRS) Notes
 <body>
 <div id="TOC">
 <ul>
-<li><a href="#chapter-1-role-of-algorithms-in-computing">Chapter 1: Role of Algorithms in Computing</a><ul>
-<li><a href="#algorithms">Algorithms</a><ul>
-<li><a href="#exercises">Exercises</a></li>
-</ul></li>
-<li><a href="#algorithms-as-a-technology">Algorithms as a technology</a><ul>
-<li><a href="#exercises-1">Exercises</a></li>
-</ul></li>
-<li><a href="#problems">Problems</a></li>
-</ul></li>
-<li><a href="#chapter-2-getting-started">Chapter 2: Getting Started</a><ul>
-<li><a href="#insertion-sort">Insertion Sort</a><ul>
-<li><a href="#insertion-sort-in-c">Insertion Sort in C++</a></li>
-<li><a href="#exercises-2">Exercises</a></li>
-</ul></li>
-</ul></li>
 <li><a href="#chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</a><ul>
 <li><a href="#representing-polynomials">Representing polynomials</a></li>
 <li><a href="#the-dft-and-fft">The DFT and FFT</a><ul>
 <li><a href="#roots-of-unity">Roots of Unity</a></li>
 <li><a href="#inverse-fast-fourier-transform">Inverse Fast Fourier Transform</a></li>
 </ul></li>
+<li><a href="#efficient-fft-implementation">Efficient FFT Implementation</a></li>
 </ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
 </div>
 <p><em>Note: I was originally planning on going cover to cover but decided that skipping around would be more fun.</em></p>
-<h1 id="chapter-1-role-of-algorithms-in-computing">Chapter 1: Role of Algorithms in Computing</h1>
-<h2 id="algorithms">Algorithms</h2>
-<p>An <strong>algorithm</strong> is something that transforms an input into an output through a sequence of computational steps that solves a <strong>computational problem</strong>. An example of a computational problem is the sorting problem. An <strong>instance</strong> of the sorting problem is to sort the sequence (3,5,74,2,1,23,5). A algorithm is defined as correct if the algorithm <em>always halts on the correct output and doesn’t halt on any inputs.</em><br />
-Problems Solved by Algorithms</p>
-<ul>
-<li><p>Sequencing genomes</p></li>
-<li><p>Information retrieval (internet)</p></li>
-<li><p>Securing personal information (cryptography)</p></li>
-<li><p>Allocating resources (linear programming)</p></li>
-<li><p>Shortest path</p></li>
-<li><p>Longest common sub-sequence</p></li>
-<li><p>Topological sorting</p></li>
-<li><p>Finding smallest convex polygon containing points</p></li>
-</ul>
-<p>A <strong>data structure</strong> is way to organize data to help with retrieval and modification.<br />
-<strong>NP-complete</strong> problems are problems with no known efficient solutions. They’re interesting since there is no proof that an efficient algorithm doesn’t exisist for NP-complete problems, if an efficient algorithm is found for one NP-complete problem then there is an efficient algorithm for all NP-complete problems, and many NP-complete problems are problems that we know efficient algorithms for but are slightly modified. An example of a NP-complete problem is the <a href="https://simple.wikipedia.org/wiki/Travelling_salesman_problem"><strong>Travelling Salesman Problem.</strong></a></p>
-<h3 id="exercises">Exercises</h3>
-<p><strong>1.1-1.</strong> In self driving cars, computing the convex hull of other cars may help with collision avoidance<br />
-<strong>1.1-2.</strong> Memory<br />
-<strong>1.1-3.</strong> <a href="https://en.wikipedia.org/wiki/Bogosort">Bogosort</a> is very good at always sorting sequences but it is very slow.<br />
-<strong>1.1-4.</strong> Both rely try to find the shortest path but traveling-salesman has a lot more stops to make.<br />
-<strong>1.1-5.</strong> An algorithm to divide a number by 3 needs best solution. An algorithm to determine risk of diabetes can be approximate.</p>
-<h2 id="algorithms-as-a-technology">Algorithms as a technology</h2>
-<p>Even if our computers were infinitely fast and memory was infinite and free somehow, we’d still want to study algorithms to understand whether they were correct or not.<br />
-<br />
-Insertion sort takes time roughly <span class="math inline">\(c_1n^2\)</span> while merge sort takes time roughly <span class="math inline">\(c_2nlog_2(n)\)</span>. Lets compare the two algorithms by running insertion sort on computer A which does <span class="math inline">\(10^{10}\)</span> instructions per second while running merge sort on computer B which does <span class="math inline">\(10^{7}\)</span> instructions per second on an input of the size <span class="math inline">\(10^7\)</span>. Also lets assume <span class="math inline">\(c_1\)</span> (the constant term in insertion sort’s running time) is 2 since Donald Knuth programmed insertion sort in <a href="https://en.wikipedia.org/wiki/MMIX">MMIX</a> and <span class="math inline">\(c_2\)</span> (constant term in merge sort’s running time) is 50 since my cat coded merge sort in <a href="https://scratch.mit.edu/">scratch</a>.<br />
-<strong>Computer A Running Insertion Sort Analysis</strong> <span class="math display">\[\frac{2\cdot(10^7)^2\text{ instructions}}{10^{10}\text{ instructions/second}}=20,000\text{ seconds or about 5.56 hours}\]</span> <strong>Computer B Running Merge Sort Analysis</strong> <span class="math display">\[\frac{50\cdot(10^7)log_2(10^7)\text{ instructions}}{10^{7}\text{ instructions/second}}=1163 \text{ seconds or about 19.4 minutes}\]</span></p>
-<p>It’s pretty clear that even though computer B is much slower than computer A (1000 times slower in fact) and merge sort was coded more inefficiently, it still won out in the end due to it’s behavior. <em>As the problem size increases, merge sort’s advantage over insertion sort is magnified.</em></p>
-<h3 id="exercises-1">Exercises</h3>
-<p><strong>1.2-1.</strong> Google maps needs to find the shortest path.<br />
-<strong>1.2-2.</strong> <span class="math inline">\(8n^2&lt;64nlgn\Rightarrow\)</span> By wolfram alpha <span class="math inline">\( n \approx 43\)</span><br />
-<strong>1.2-3.</strong> <span class="math inline">\(100n^2&lt;2^n\Rightarrow\)</span> By wolfram alpha <span class="math inline">\(n=15\)</span></p>
-<h2 id="problems">Problems</h2>
-<p><strong>1-1.</strong> Just solve for n in <span class="math inline">\(f(n)= t\text{ seconds}* 10^{6}\)</span> to fill in chart. e.g. <span class="math display">\[n^2=60 \text{ seconds} * 10^6\]</span> <span class="math display">\[n=7745.966\]</span></p>
-<h1 id="chapter-2-getting-started">Chapter 2: Getting Started</h1>
-<h2 id="insertion-sort">Insertion Sort</h2>
-<p><strong>Insertion sort</strong> works similar to how most people sort a hand of playing cards. We start by looking at the second card and seeing if it’s greater than or less than the first card. If it’s greater than, we leave it where it is. If it’s less than, we insert if before the first card. Afterwards we look at the third card and insert it properly into the sequence of the first two cards so that now the first three cards are properly sorted. This process continues for all the cards.</p>
-<p><em>Example: sort the sequence (6,9,3,5)</em><br />
-6 9 3 5<br />
-3 6 9 5<br />
-3 5 6 9</p>
-<h3 id="insertion-sort-in-c">Insertion Sort in C++</h3>
-<pre><code>void insertion_sort(vector&lt;int&gt;&amp; A){
-  for(int x = 1; x&lt;A.size(); x++){
-    int curr = A[x]; //1
-    int i = x-1;
-    while(i&gt;=0 &amp;&amp; A[i] &gt; curr){ //2
-      A[i+1] = A[i];
-      i--;
-    }
-    A[i+1] = curr; //3
-  }
-}</code></pre>
-<p>For each elemnt, we assign the variable <em>curr</em> to it (1). Then we start looking at the previous sequence and keep shifting elements until we find the proper place (2) to insert the current element we’re trying to insert. After this place is found, we insert the element there and move onto the next element.<br />
-<br />
-At every iteration, the subarry from index 0 to x-1 is sorted. We’ll call this property a <strong>loop invariant</strong> and use this property to understand why the algorithm works. We must show that the loop invariant is</p>
-<ol>
-<li><p><strong>Initialization:</strong> Loop invariant is true before the first loop begins</p></li>
-<li><p><strong>Maintenance:</strong> That if the loop invariant is true before one iteration, it must remain true for the next iteration.</p></li>
-<li><p><strong>Termination:</strong> That when the loop terminates, the invariant helps show the algorithm works</p></li>
-</ol>
-<p>Applying this to insertion sort:</p>
-<ol>
-<li><p><strong>Initialization:</strong> We start by looking at the second elment which is at index 1. The subarray from index 0 to 0 is sorted since it is just one element. Therefore the loop invariant is true before the first loop begins.</p></li>
-<li><p><strong>Maintenance:</strong> After the iteration is done for index y, the subarray from index 0 to y is sorted. Therefore for the next iteration, the subarray from index 0 to x-1 which in this case is (y+1)-1 is sorted thus preserving the loop invariant.</p></li>
-<li><p><strong>Termination:</strong> The loop terminates when x=A.size() or when x is the array size which we’ll call n. This means that the subarray from index 0 to n-1 is sorted. Notice how this subarray is simply the entire orignal array. We can now conclude the entire array is sorted meaning the algorithm works.</p></li>
-</ol>
-<h3 id="exercises-2">Exercises</h3>
-<p><strong>2.1-1.</strong></p>
-<p>31 41 59 26 41 58<br />
-31 41 59 26 41 58<br />
-26 31 41 59 41 58<br />
-26 31 41 41 59 58<br />
-26 31 41 41 58 59</p>
-<p><strong>2.1-2</strong></p>
-<pre><code>void insertion_sort(vector&lt;int&gt;&amp; A){
-  for(int x = 1; x&lt;A.size(); x++){
-    int curr = A[x]; //1
-    int i = x-1;
-    while(i&gt;=0 &amp;&amp; A[i] &lt; curr){ //2
-      A[i+1] = A[i];
-      i--;
-    }
-    A[i+1] = curr; //3
-  }
-}</code></pre>
-<p><strong>2.1-3.</strong></p>
-<pre><code>int linear_search(vector&lt;int&gt;&amp; A, int e){
-  for(int x = 0; x&lt;A.size(); x++){
-    if(A[x]==e)
-      return x;
-  }
-  return -1;
-}</code></pre>
-<p><strong>Loop invariant:</strong> For index x, there is no index y where y&lt;x where A[y]=e<br />
-<strong>Initialization:</strong> Loop invariant is true since there are not index y where y&lt;x<br />
-<strong>Maintenance:</strong> If loop invariant is true for iteration at index k and we move onto the next iteration, then A[k]!=e therefore the loop invariant holds for iteration at index k+1<br />
-<strong>Termination:</strong> Loop terminates if either the element is found or the index is no longer less than the size of the array. In both cases the algorithm works since either we prove the element in not in the array or we found the element and returned the index.<br />
-<strong>2.1-4.</strong><br />
-<strong>Input:</strong> Two arrays A and B of size n containing two n-bit binary integeres<br />
-<strong>Output:</strong> One array, C, of size n+1 containing the sum of the two n-bit binary integers stored in A and B</p>
-<pre><code>vector&lt;int&gt; binary_add(vector&lt;int&gt;&amp; A, vector&lt;int&gt;&amp; B){
-  int n = A.size();
-  vector&lt;int&gt; C(n+1);
-  int carry = 0;
-  for(int x = n-1; x&gt;=0; x--){
-    C[x+1] = A[x]+B[x]+carry;
-    if(C[x+1]&gt;1){
-      C[x+1]%=2;
-      carry=1;
-    }
-    else
-      carry=0;
-  }
-  C[0]=carry;
-  return C;
-}</code></pre>
 <h1 id="chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</h1>
 <p>The fast Fourier transform reduced the complexity of multiplying together two polynomials from <span class="math inline">\(\Theta(n^2)\)</span> to <span class="math inline">\(\Theta(nlgn)\)</span>. <a href="https://www.youtube.com/watch?v=spUNpyF58BY">Neat introduction to fourier transform</a>.<br />
 <strong>Polynomial</strong><span class="math display">\[A(x)=a_0+a_1x+a_2x^2+a_3x^3...a_{n-1}x^{n-1}=\sum_{j=0}^{n-1}a_jx^j=&lt;a_0, a_1,..,a_{n-1}&gt;\]</span> Things you might want to do with polynomials:</p>
@@ -223,13 +92,53 @@ We want to multiply two polynomials, A and B store the result in C. <span class=
 <p>So converting from coefficient to point-value representation is simply the matrix product of the V, the Vandermonde matrix, and a, the coefficient matrix which we simplified with the FFT. The inverse FFT then is simply multiplying by <span class="math inline">\(V^{-1}\)</span>. This is pretty simple to see: <span class="math display">\[V^{-1}(V A)=V^{-1}A^*\]</span> <span class="math display">\[A=V^{-1}A^*\]</span> Luckily, <span class="math inline">\(V^{-1}\)</span> has a special form: <span class="math display">\[V^{-1}=\bar{V}/n\]</span> where <span class="math inline">\(\bar{V}\)</span> is the complex conjugate of V. Recall that <span class="math inline">\(V_{jk}=x_j^k=e^{ijk2\pi/n}\)</span> and the complex conjugate of <span class="math inline">\(e^{ijk2\pi/n}\)</span> is <span class="math inline">\(e^{-ijk2\pi/n}\)</span>. Thus we have the equation for the Inverse FFT: <span class="math display">\[(nV^{-1})A^*=nA\]</span> Now all there is to do is prove that neat formula for <span class="math inline">\(V^{-1}\)</span> and we’ll have a <span class="math inline">\(O(nlgn)\)</span> algorithm for polynomial multiplication.<br />
 <br />
 <strong>Prove that <span class="math inline">\(V^{-1}=\bar{V}/n\)</span></strong><br />
-To do this we will prove that <span class="math inline">\(V\bar{V}=nI\)</span> where I is the identity matrix.</p>
+To do this we will prove that <span class="math inline">\(V\bar{V}=nI\)</span> where I is the identity matrix. We’ll let <span class="math inline">\(P=V\bar{V}\)</span>. This means that <span class="math display">\[\begin{aligned}
+  P_{jk}&amp;=\sum_{m=0}^{n-1}e^{ij2\pi m/n}e^{-ik2\pi m/n}\\
+  &amp;=\sum_{m=0}^{n-1}e^{i(j-k)2\pi m/n}\end{aligned}\]</span> We know that if j=k then <span class="math inline">\(P_{jk}\)</span> would simply be <span class="math inline">\(\sum_{m=0}^{n-1}1\)</span>. If not then it becomes a geometric series. <span class="math display">\[x=e^{i(j-k)2\pi/n}\]</span> <span class="math display">\[\begin{aligned}
+  P_{jk}&amp;=\sum_{m=0}^{n-1}x^m\\
+  &amp;=\frac{x^n-1}{x-1}\end{aligned}\]</span> Now remember that <span class="math inline">\(e^{i2\pi}=1\)</span> which means <span class="math display">\[P_{jk}=\frac{1^{(j-k)}-1}{aribitrary}=0\]</span> this lets us see that <span class="math inline">\(P=nI\)</span> which proves that <span class="math inline">\(V^{-1}=\bar{V}/n\)</span>.</p>
+<h2 id="efficient-fft-implementation">Efficient FFT Implementation</h2>
+<p><em>Note: A lot of the material in this section is in fact not from the book but from <a href="https://cp-algorithms.com/algebra/fft.html">here</a>. They seem to hit on the same main points.</em><br />
+We’ll start by examining a recursive implementation of the FFT and then see how we can improve upon it.</p>
+<pre><code>#define PI 3.14159265358979323846
+void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
+  //Base case of Recursion
+  int n = a.size();
+  if(n==1)
+    return;
+
+  //Divide
+  vector&lt;complex&lt;double&gt;&gt; a_even(n/2);
+  vector&lt;complex&lt;double&gt;&gt; a_odd(n/2);
+
+  for(int i = 0; 2*i&lt;n; i++){
+    a_even[i]=a[2*i];
+    a_odd[i]=a[2*i+1];
+  }
+
+  fft(a_even);
+  fft(a_odd);
+
+  //Conquer
+  double ang = 2*PI/n;
+  complex&lt;double&gt; x(1); //aka e^0 of when angle = 0
+  complex&lt;double&gt; xn(cos(ang), sin(ang)); //compute difference between sequential x_k values
+  for(int i = 0; 2 * i &lt; n; i++){
+    a[i] = a_even[i]+w*a_odd[i];
+    a[i+n/2] = a_even[i]-w*a_odd[i];
+    w *= wn; //adds angle difference (remember: e^k+e^j = e^(k+j) and
+             //we&#39;re working in the form e^{i\theta})
+  }
+}</code></pre>
+<p>The inverse foruier transform is mostly the same as this implementation except with one or two extra lines thrown in.</p>
 <h1 id="revision-history">Revision History</h1>
 <p>06-30-2019: Initial Commit<br />
 07-01-2019: Chapter 1 Added<br />
 07-02-2019: Chapter 2.1 Added<br />
 07-03-2019: part of Chapter 30.1 added<br />
 07-04-2019: part of Chapter 30.2 added<br />
+07-05-2019: section on roots of unity and inverse fast foureir transform added<br />
+07-06-2019: added FFT implementation and removed ch1 and 2 since they were just taking up space.<br />
 </p>
 <p><br />
 <br />
