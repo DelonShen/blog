@@ -1,19 +1,27 @@
 ---
 title: Introduction to Algorithms(CLRS) Notes
 ---
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Delon Shen" />
-  <title></title>
-  <style type="text/css">code{white-space: pre;}</style>
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <title>notes</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-<div id="TOC">
+<nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</a><ul>
 <li><a href="#representing-polynomials">Representing polynomials</a></li>
@@ -22,11 +30,11 @@ title: Introduction to Algorithms(CLRS) Notes
 <li><a href="#inverse-fast-fourier-transform">Inverse Fast Fourier Transform</a></li>
 </ul></li>
 <li><a href="#efficient-fft-implementation">Efficient FFT Implementation</a></li>
+<li><a href="#parallel-fft-circuit">Parallel FFT Circuit</a></li>
 </ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
-</div>
-<p><em>Note: I was originally planning on going cover to cover but decided that skipping around would be more fun.</em></p>
+</nav>
 <h1 id="chapter-30-polynomials-and-the-fft">Chapter 30: Polynomials and the FFT</h1>
 <p>The fast Fourier transform reduced the complexity of multiplying together two polynomials from <span class="math inline">\(\Theta(n^2)\)</span> to <span class="math inline">\(\Theta(nlgn)\)</span>. <a href="https://www.youtube.com/watch?v=spUNpyF58BY">Neat introduction to fourier transform</a>.<br />
 <strong>Polynomial</strong><span class="math display">\[A(x)=a_0+a_1x+a_2x^2+a_3x^3...a_{n-1}x^{n-1}=\sum_{j=0}^{n-1}a_jx^j=&lt;a_0, a_1,..,a_{n-1}&gt;\]</span> Things you might want to do with polynomials:</p>
@@ -60,7 +68,7 @@ So we want if we want to find the polynomical representation of this point-value
 \begin{bmatrix}
   y_0 \\ y_1 \\ \vdots \\ y_{n-1}
 \end{bmatrix}\]</span> The left most matrix is known as the Vandermonde matrix, V, in which <span class="math inline">\(V_{jk} = x_j^k\)</span>. In this form we can see the transformation from coefficient representation to point-value representation as simply a matrix multiplication that will take <span class="math inline">\(O(n^2)\)</span>. In this form we can also see the transformation from point-value representation to coefficient representation as solving a system of linear equations. In math we would multiply by the inverse but since this is CS we’d have to use <a href="https://cp-algorithms.com/linear_algebra/linear-system-gauss.html"><strong>gaussian elimination!</strong></a> This is unfortunately <span class="math inline">\(O(n^3)\)</span> though but it does prove that there is a unique coefficient representation. <em>Note: there is a different proof in the book for the fact that there is a unique coefficient representation but this way made more sense to me. It is less rigorous though.</em><br />
-In point-value representation, addition and multiplication is simply O(n). For example. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{n-1}, y_{n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{n-1}, y&#39;_{n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{n-1}, y_{n-1}+y&#39;_{n-1})\}\]</span> For multiplying polynomials we must take into account that the degree-bound of the resulting polynomial is the degree(A)+degree(B) where A and B are the two inputs. Therefore we must make sure that we have a “extended” point value represention of A and B with 2n point value pairs to make sure we have a unique polynomial of degree bound 2n. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{2n-1}, y_{2n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{2n-1}, y&#39;_{2n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{2n-1}, y_{2n-1}y&#39;_{2n-1})\}\]</span> The time is still <span class="math inline">\(O(n)\)</span> however.<br />
+In point-value representation, addition and multiplication is simply O(n). For example. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{n-1}, y_{n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{n-1}, y&#39;_{n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{n-1}, y_{n-1}+y&#39;_{n-1})\}\]</span> For multiplying polynomials we must take into account that the degree-bound of the resulting polynomial is the degree(A)+degree(B) where A and B are the two inputs. Therefore we must make sure that we have a "extended" point value represention of A and B with 2n point value pairs to make sure we have a unique polynomial of degree bound 2n. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{2n-1}, y_{2n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{2n-1}, y&#39;_{2n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{2n-1}, y_{2n-1}y&#39;_{2n-1})\}\]</span> The time is still <span class="math inline">\(O(n)\)</span> however.<br />
 So the question now becomes how can we take advantage of this O(n) multiplication of two polynomials in point-value form to multiply two coefficient form polynomials. Our ability to do this efficiently hinges on being able to convert between the two forms efficiently and this is what the FFT gives us if we select our <span class="math inline">\(x_k\)</span>’s carefully.</p>
 <h2 id="the-dft-and-fft">The DFT and FFT</h2>
 <p><em>This section I mostly based of <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2015/lecture-videos/lecture-3-divide-conquer-fft/">the 6.046 lecture on FFT</a></em><br />
@@ -80,7 +88,7 @@ So the goal of our algorithm is to compute A(x) for <span class="math inline">\(
   &amp;=n\cdot O(n^2)\\
   &amp;=O(n^3)\end{aligned}\]</span> <em>Note: Erik Demaine says it’s <span class="math inline">\(O(n^2)\)</span> and he’s probably definitely right but this is the answer I got and I’m not sure where I went wrong so I’ll just leave it here for now. What matters is that the algorithm is not great right now.</em><br />
 <br />
-The algorithm isn’t great and it’s because this <span class="math inline">\(|X|\)</span> term remains the same. We should notice that if <span class="math inline">\(|X|\)</span> <strong>collapsed</strong> for each subproblem, that is <span class="math inline">\(|X^2|=\frac {|X|} 2\)</span>, or <span class="math inline">\(|X|\)</span> was halved along with n and at each division step, then the recurrence relation would simply be <span class="math display">\[T(n)=2T(\frac n 2)+O(n)\]</span> It is easy to see that this means <span class="math inline">\(T(n)=O(nlgn)\)</span>. We can achieve this feature of “collapsing” by choosing our <span class="math inline">\(x_k\)</span> values very carefully by utilizing <strong>Roots of Unity</strong>.</p>
+The algorithm isn’t great and it’s because this <span class="math inline">\(|X|\)</span> term remains the same. We should notice that if <span class="math inline">\(|X|\)</span> <strong>collapsed</strong> for each subproblem, that is <span class="math inline">\(|X^2|=\frac {|X|} 2\)</span>, or <span class="math inline">\(|X|\)</span> was halved along with n and at each division step, then the recurrence relation would simply be <span class="math display">\[T(n)=2T(\frac n 2)+O(n)\]</span> It is easy to see that this means <span class="math inline">\(T(n)=O(nlgn)\)</span>. We can achieve this feature of "collapsing" by choosing our <span class="math inline">\(x_k\)</span> values very carefully by utilizing <strong>Roots of Unity</strong>.</p>
 <h3 id="roots-of-unity">Roots of Unity</h3>
 <p>We can construct a collapsing set with the power of square roots. For example, the <span class="math inline">\(X^2\)</span> is collapsing if <span class="math inline">\(X=\{1, -1\}\)</span>. And this set in turn is the <span class="math inline">\(X^2\)</span> set of <span class="math inline">\(\{1,-1,i,-i\}\)</span>. All of these points are spaced out evenly on the unit circle in the complex plane. We can find larger sets with this collapsing property by utilizing the equation <span class="math display">\[cos(\theta)+isin(\theta)=e^{i\theta}\]</span> with <span class="math display">\[\theta=2k\pi/n, k=0,1,2,...,n-1\]</span> From the equation <span class="math inline">\(e^{i\theta}\)</span> we can see that if we square a number we simply double the angle on the unit cirlce since <span class="math inline">\((e^{i\theta})^2=e^{i2\theta}\)</span>. However what if we double an angle if it’s bigger than <span class="math inline">\(\pi\)</span>? We would have gone around the entire circle and passed <span class="math inline">\(\theta=0\)</span>. In otherwords <span class="math inline">\(2\cdot \frac{3\pi}{2}=3\pi=\pi\)</span>. This lets us see that <span class="math inline">\((e^{i\theta})^2\)</span> actually equals <span class="math inline">\(e^{i2\theta\text{ mod }2\pi}\)</span> which gives the set of roots of unity the collapsing feature. For example, in the set <span class="math inline">\(X=\{1,-1,i,-i\}\)</span> we can figure out the angles to be <span class="math inline">\(\{0,\pi,\pi/2,3\pi/2\}\)</span> from Euler’s formula. But once we double the angles(aka finding the set <span class="math inline">\(X^2\)</span>) we get the set of angles of <span class="math inline">\(\{0, 2\pi, \pi, 3\pi\}=\{0,0,\pi,\pi\}\)</span>.<br />
 <br />
@@ -121,7 +129,7 @@ void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
 
   //Conquer
   double ang = 2*PI/n;
-  complex&lt;double&gt; x(1); //aka e^0 of when angle = 0
+  complex&lt;double&gt; x(1); //aka e^0 or when angle = 0
   complex&lt;double&gt; xn(cos(ang), sin(ang)); //compute difference between sequential x_k values
   for(int i = 0; 2 * i &lt; n; i++){
     a[i] = a_even[i]+w*a_odd[i];
@@ -130,7 +138,58 @@ void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
              //we&#39;re working in the form e^{i\theta})
   }
 }</code></pre>
-<p>The inverse foruier transform is mostly the same as this implementation except with one or two extra lines thrown in.</p>
+<p>The inverse fourier transform is mostly the same as this implementation except with one or two extra lines thrown in. To improve this algorithm we can first try to see if we can do everything in place. In other words, can we get rid the of the vectors a_even and a_odd.<br />
+<br />
+The thing to notice here is how the bits of the position corresponds to how the vector is divided into a_even and a_odd. Lets look at an example of a vector with size=8: <span class="math display">\[A=\{a_{0000}, a_{0001}, a_{0010}, a_{0011}, a_{0100}, a_{0101}, a_{0110}, a_{0111}\}\]</span> I put the binary representation of the possition vector to hopefully make the relationship clear.<br />
+After the first recursive call: <span class="math display">\[A_{even}=\{a_{000{\bf0}}, a_{001{\bf0}}, a_{010{\bf0}}, a_{011{\bf0}}\}\]</span> <span class="math display">\[A_{odd}=\{a_{000{\bf1}}, a_{001{\bf1}}, a_{010{\bf1}}, a_{011{\bf1}}\}\]</span> Notice how the lowest bit is the same for all elements in <span class="math inline">\(A_{even}\)</span> and <span class="math inline">\(A_{odd}\)</span>. Namely that the lowest bit of the position is 0 in <span class="math inline">\(A_{even}\)</span> and 1 in <span class="math inline">\(A_{odd}\)</span>. Now lets looks at the next recursive level for <span class="math inline">\(A_{even}\)</span>. It will be the same trend for <span class="math inline">\(A_{odd}\)</span>. <span class="math display">\[A_{even}=B\]</span> <span class="math display">\[B_{even}=\{a_{00{\bf0}0}, a_{01{\bf0}0}\}\]</span> <span class="math display">\[B_{odd}=\{a_{00{\bf1}0}, a_{01{\bf1}0}\}\]</span> Now the second-lowest bit is used to divide up <span class="math inline">\(A_{even}\)</span> into it’s sub-matricies. The pattern should be clear at this point but lets just go one more level. <span class="math display">\[B_{even}=C\]</span> <span class="math display">\[C_{even}=\{a_{0{\bf0}00}\}\]</span> <span class="math display">\[C_{odd}=\{a_{0{\bf1}00}\}\]</span> And now the third-lowest bit is used to divide up the vector.<br />
+We can use this property to rearrange the matrix into a more favorable order through something called <strong>bit-reversal permutation</strong>. Basically, we reverse all the positions n-bit representation and sort the vector based on these reversed values. So our previous example of 8 values would turn from <span class="math display">\[A=\{a_{0000}, a_{0001}, a_{0010}, a_{0011}, a_{0100}, a_{0101}, a_{0110}, a_{0111}\}\]</span> into <span class="math display">\[A=\{a_{0000}, a_{0100}, a_{0010}, a_{0110}, a_{0001}, a_{0101}, a_{0011}, a_{0111}\}\]</span> or more clearly <span class="math display">\[A=\{a_{0}, a_{4}, a_{2}, a_{6}, a_{1}, a_{5}, a_{3}, a_{7}\}\]</span> Now each subproblem is grouped with its constituents which will make doing the FFT in-place much simpler. We would simply be processing things in groups of 2, then 4, and then 8. This allows us to also get rid of recursion.</p>
+<pre><code>#define PI 3.14159265358979323846
+int reverse(int n, int lgn){
+  //lgn is the number of bits in n
+  int out=0;
+  for(int i = 0; i&lt;lgn; i++){
+    if(n &amp; (1 &lt;&lt; i)) //if the ith bit is set
+      out |= 1 &lt;&lt; (lgn-1-i); //we set the (lgn-1-i) bit
+                             //of the return value
+  }
+  return out;
+}
+void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
+  int n=a.size();
+  int lgn=0;
+
+  //fancy log_2(n)
+  while((1&lt;&lt;lgn) &lt; n)
+    lgn++;
+
+  //bit-reversal permutation
+  for(int i = 0; i&lt;n; i++){
+    int temp = reverse(i, lgn);
+    if(i &lt; temp)
+      swap(a[i], a[temp]);
+  }
+  //grp is the size of the groups 
+  //that we&#39;ll be processing. 
+  //grp=2,4,8 (basically the size 
+  //for each levels of recursion)
+  for(int grp=2; grp&lt;=n; grp&lt;&lt;1){
+    double ang = 2 * PI / grp;
+    complex&lt;double&gt; wn(cos(ang), sin(ang)); //delta between angels
+    //now we&#39;re processing each &quot;group&quot;
+    //this is what recursion used to do
+    for(int i=0; i&lt;n; i+=grp){
+      complex&lt;double&gt; w(1); //angle = 0
+      //in this next loop we&#39;re doing the &quot;conquer&quot; step
+      for(int j=0; j&lt;grp/2; j++){
+        complex&lt;double&gt; u = a[i+j], v=a[i+j+grp/2]*w;
+        a[i+j] = u+v;
+        a[i+j+grp/2] = u-v;
+        w *= wn;
+      }
+    }
+  }
+}</code></pre>
+<h2 id="parallel-fft-circuit">Parallel FFT Circuit</h2>
 <h1 id="revision-history">Revision History</h1>
 <p>06-30-2019: Initial Commit<br />
 07-01-2019: Chapter 1 Added<br />
@@ -139,7 +198,7 @@ void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
 07-04-2019: part of Chapter 30.2 added<br />
 07-05-2019: section on roots of unity and inverse fast foureir transform added<br />
 07-06-2019: added FFT implementation and removed ch1 and 2 since they were just taking up space.<br />
-</p>
+07-08-2019: added iterative FFT and bit-reversal permutation</p>
 <p><br />
 <br />
 <em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
