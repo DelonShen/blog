@@ -32,6 +32,12 @@ title: Introduction to Algorithms(CLRS) Notes
 <li><a href="#efficient-fft-implementation">Efficient FFT Implementation</a></li>
 <li><a href="#parallel-fft-circuit">Parallel FFT Circuit</a></li>
 </ul></li>
+<li><a href="#chapter-15-dynamic-programming">Chapter 15: Dynamic Programming</a><ul>
+<li><a href="#rod-cutting">Rod Cutting</a><ul>
+<li><a href="#naive-solution">Naive solution</a></li>
+<li><a href="#dynamic-programming-solution">Dynamic programming solution</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
 </nav>
@@ -190,6 +196,82 @@ void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
   }
 }</code></pre>
 <h2 id="parallel-fft-circuit">Parallel FFT Circuit</h2>
+<p><em>Skipped</em></p>
+<h1 id="chapter-15-dynamic-programming">Chapter 15: Dynamic Programming</h1>
+<p>Steps to create dynamic-programming algorithm:</p>
+<ol>
+<li><p>Characterize the structure of optimal solution</p></li>
+<li><p>Define the value of an optimal solution</p></li>
+<li><p>Computer the value of the optimal solution (usually bottom-up)</p></li>
+<li><p>Construct optimal solution from computer information</p></li>
+</ol>
+<h2 id="rod-cutting">Rod Cutting</h2>
+<p><strong>Input:</strong> The length of the rod we want to cut, N, and then a list of lengths, i, with their corresponding value, <span class="math inline">\(p_i\)</span>. Input is terminated with length i = 0<br />
+<strong>Input Format:</strong><br />
+N<br />
+<span class="math inline">\(i_0\)</span> <span class="math inline">\(p_0\)</span><br />
+<span class="math inline">\(i_1\)</span> <span class="math inline">\(p_1\)</span><br />
+<span class="math inline">\(i_2\)</span> <span class="math inline">\(p_2\)</span><br />
+...<br />
+0 0<br />
+<strong>Output:</strong> the maximum revenue from cutting a rod of length N.<br />
+This problem is called the <strong>rod cutting problem</strong>. We should notice that when we cut a rod of length n into say two rods of length 2 and n-2, these two problems become their own independent rod cutting problems. From this we can say that this problem has a property called <strong>optimal substructure</strong>. First lets analyze a naive recursive solution.</p>
+<h3 id="naive-solution">Naive solution</h3>
+<pre><code>#define INF 1000000000
+int cut_rod_naive(vector&lt;int&gt;&amp; value, int n){
+  if(n==0) //if the rod size is 0, then it&#39;s value is 0
+    return 0;
+  int ret = value[n]; //initalize maximum value of cutting rod of length n
+  for(int i = 1; i&lt;n; i++){
+    ret = max(ret, value[i] + cut_rod_naive(value, n-i)); //tries cutting rod into pieces of 
+                                                          //size n-i and i and checking how
+                                                          //valuable that is
+  }
+  return ret;
+}</code></pre>
+<p>It’s easy to see an implementation like this would work, but it’s also easy to see that this is horribly inefficient. Lets let T(n) equal the running time to compute the solution for rod of size n.<br />
+T(4) calls T(3), T(2), T(1).<br />
+T(3) calls T(2), T(1)<br />
+T(2) calls T(1)<br />
+T(1) returns value[1]<br />
+The first thing we should notice is the overlapping subproblems. T(2) is called twice and T(1) is called 4 times. That is obviously not optimal. We can represent this running time with <span class="math display">\[T(n)= 1 + \sum_{j=1}^{n-1}T(j)\]</span> <span class="math display">\[T(n)= 1+ T(1) + T(2) + T(3) + ... + T(n-1)\]</span> There will be one T(1) term from T(2), two T(1) terms from T(3), four T(1) terms from T(4), eight T(1) terms from T(5), <span class="math inline">\(2^{k-2}\)</span> T(1) terms for T(k). Also we know T(1) = 1. Therefore <span class="math display">\[T(n) = 2 + \sum_{k=0}^{n-3}2^k\]</span> To solve this summation lets imagine everything in binary. More specifically<br />
+<span class="math inline">\(2^0\)</span> = 1<br />
+<span class="math inline">\(2^1\)</span> = 10<br />
+<span class="math inline">\(2^2\)</span>=100<br />
+and so on. From this it’s easy to see the summation would result in a binary number with n-2 1’s. We can represent this simply as <span class="math inline">\(2^{n-1}-1\)</span>. Therefore <span class="math display">\[T(n)=2+2^{n-1}-1 = O(2^n)\]</span> Obviously a algorithm with running time <span class="math inline">\(O(2^n)\)</span> is not great. This means that on a modern computer, a rod of size 40 would take about 18 minutes to solve.</p>
+<h3 id="dynamic-programming-solution">Dynamic programming solution</h3>
+<p>So now lets try to construct an efficient solution. The thing we should be concerned by and try to solve is the fact that subproblems are computed multiple times. If we can store these values after we compute these once, then we wouldn’t have to recompute them every time. This will take up additional memory and is an example of <strong>time-memory trade off.</strong> We can take two approaches to this, the <strong>top-down memoized</strong> approach which basically is our previous implementation with a vector to store already computed values and the <strong>bottom-up method.</strong> This basically means we start by computing the solution for n=1 and then n=2 and so on and refer back to our previous results when we need them. Both of these approaches technically have the same running time but bottom up usually is better since there’s is less overhead due to recursion. <strong>Top-down memoized</strong></p>
+<pre><code>#define INF 1000000000
+const int maximum_n=10000000;
+vector&lt;int&gt; memo(maximum_n, -1); //initalizes a memo 
+int cut_rod_memo(vector&lt;int&gt;&amp; value, int n){
+  if(n==0) 
+    return 0;
+  //Checks if the value is in the memo and returns the value if it does
+  if(memo[n]!=-1)
+    return memo[n];
+  int ret = value[n]; 
+  for(int i = 1; i&lt;n; i++){
+    ret = max(ret, value[i] + cut_rod_naive(value, n-i)); 
+  }
+  //adds value to the memo for future use
+  memo[n]=ret;
+  return ret;
+}</code></pre>
+<p><strong>Bottom-up</strong></p>
+<pre><code>#define INF 1000000000
+int cut_rod_bottom(vector&lt;int&gt;&amp; value, int n){
+  vector&lt;int&gt; memo(n+2, -1);
+  memo[0]=0;
+  for(int x = 1; x&lt;=n; x++){
+    int c_max = value[x];
+    for(int y = 1; y&lt;=x; y++)
+      c_max = max(c_max, value[y]+memo[x-y]);
+    memo[x]=c_max;
+  }
+  return memo[n];
+}</code></pre>
+<p>From the nested loop structure it is very easy to see that is algorithm is <span class="math inline">\(O(n^2)\)</span> which is a huge improvement over our previous <span class="math inline">\(O(2^n)\)</span> algorithm.</p>
 <h1 id="revision-history">Revision History</h1>
 <p>06-30-2019: Initial Commit<br />
 07-01-2019: Chapter 1 Added<br />
@@ -198,7 +280,8 @@ void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
 07-04-2019: part of Chapter 30.2 added<br />
 07-05-2019: section on roots of unity and inverse fast foureir transform added<br />
 07-06-2019: added FFT implementation and removed ch1 and 2 since they were just taking up space.<br />
-07-08-2019: added iterative FFT and bit-reversal permutation</p>
+07-08-2019: added iterative FFT and bit-reversal permutation<br />
+07-10-2019: started dynamic programming. added implementations of rod-cutting</p>
 <p><br />
 <br />
 <em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
