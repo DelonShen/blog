@@ -4,5 +4,6 @@ title: Notes
 
 [Introduction to Algorithms (CLRS)](./clrs)
 
-[Jazz Improvisation (Gary Burton)](./jazz_improv)
+[An Introduction to Tonal Theory(Westergaard)](./itt)
+
 
