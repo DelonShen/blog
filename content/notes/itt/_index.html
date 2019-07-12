@@ -25,8 +25,12 @@ title: An Introduction to Tonal Theory(Westergaard) Notes
 <ul>
 <li><a href="#chapter-two-notes">Chapter Two: Notes</a><ul>
 <li><a href="#pitch">Pitch</a><ul>
+<li><a href="#collections">Collections</a></li>
 <li><a href="#notating-pitch">Notating Pitch</a></li>
+<li><a href="#naming-intervals">Naming Intervals</a></li>
+<li><a href="#exercises">Exercises</a></li>
 </ul></li>
+<li><a href="#time">Time</a></li>
 </ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
@@ -42,7 +46,9 @@ title: An Introduction to Tonal Theory(Westergaard) Notes
 <p>We’re focus on measuring/quantifying pitch and time of a note much more than we do for the loudness and timbre. To measure pitch/time we usually put them in a <em>reference system</em> (I guess the same thing as a reference frame in physics).</p>
 <h2 id="pitch">Pitch</h2>
 <p>A pitch is how high or low a note is. We identify pitches by relating them to a specific collection and compare pitches by relating both pitches to a specific collection. I guess an example of this would be how the 440Hz is <span class="math inline">\(A_4\)</span> on the piano.<br />
-Lets examine one collection that everyone knows about, the <strong>Chromatic Collection</strong> which is measured by <strong>semitones.</strong> Lets first play one note on the piano, and if we go exactly one key higher (e.g. from a C to a C#) then the difference between the pitches of those two notes (should) be the exact same difference between the pitches of the note one key higher and two keys higher (e.g. from C# to D). The difference in these pitches are called semitones. A collection of pitches that are separated by semitones is called a chromatic collection. Using this notion of semitones we can also start comparing pitches by describing their difference in semitones. For example, C and D differ by 2 semitones.<br />
+</p>
+<h3 id="collections">Collections</h3>
+<p>Lets examine one collection that everyone knows about, the <strong>Chromatic Collection</strong> which is measured by <strong>semitones.</strong> Lets first play one note on the piano, and if we go exactly one key higher (e.g. from a C to a C#) then the difference between the pitches of those two notes (should) be the exact same difference between the pitches of the note one key higher and two keys higher (e.g. from C# to D). The difference in these pitches are called semitones. A collection of pitches that are separated by semitones is called a chromatic collection. Using this notion of semitones we can also start comparing pitches by describing their difference in semitones. For example, C and D differ by 2 semitones.<br />
 <br />
 Lets move onto another collection hm? An interval of twelve semitones is very special. For example, if we play the highest note on the piano and then a note 12 semitones lower, what do we get? The same note but an octave down. Despite the fact that they’re obviously not the same pitch, we can accept they’re the same note. A collection or set of notes that are separated by 12 semitones is called a <strong>Pitch Class.</strong><br />
 <br />
@@ -51,9 +57,56 @@ Now just one more collection. Consider the intervals between notes if we only us
 We can do this pattern starting on other notes too(this is obviously a scale but pretend you don’t know that.) A set of pitches separated by this pattern is called a <strong>Diatonic Collection.</strong> Since there are twelve pitches to start on in the chromatic collection, there are twelve diatonic collections if we work from the frame of reference of the chromatic collection.</p>
 <h3 id="notating-pitch">Notating Pitch</h3>
 <p>To notate pitch we use a five line staff were we can put a note on a line of between two lines. Notes of the same pitch fall on the same line/space and notes adjacent in the diatonic collection are on the adjacent lines and spaces. We use a clef to denote which line/space corresponds to which pitch and we use a key signature to denote what diatonic collection we are using. We can use <em>accidentals</em> to denote notes that are not in a diatonic collection. By putting a sharp(<span class="math inline">\(\sharp\)</span>) we can demonstrate that we want to play a note a semitone higher and putting a flat(<span class="math inline">\(\flat\)</span>) we can demonstrate that we want to play a note a semitone lower. There are also double-sharps, double-flats, and naturals.</p>
+<h3 id="naming-intervals">Naming Intervals</h3>
+<p>We can name intervals by pitches relations to eachother in a collection. For example two pitches that are the same have the same name in a collection and can be called a <strong>unison</strong>. Two adjacent pitches can be called a <strong>second.</strong> We should notice that there are two kinds of "second" intervals in the diatonic set however. One is a interval composed of two semitones(e.g. C to D in the C-Diatonic collection) and another is a interval composed of one semitone (e.g. E to F in the C-diatonic collection). We’ll call the former a <strong>major second</strong> and the latter a <strong>minor second.</strong><br />
+<br />
+We can think of bigger intervals by how they can be made up of major or minor seconds. A interval that is made up of two second intervals can be called a <strong>third</strong>. And since there are two kinds of second intervals there must be <em>at least</em> two third intervals. In the diatonic collection we have intervals made up of two major second intervals (e.g. F to G to A) and intervals made up of a major second and a minor second interval (e.g. D to E to F). We’ll call the former a major third and the second a minor third. There is another third that can be made up of two minor seconds (e.g. G# to A to Bb) that doesn’t appear in the diatonic collection that we’ll call a <strong>diminished third.</strong><br />
+<br />
+Fourths are very similar. They are intervals made up of three second intervals and in the diatonic collection there are two possibilities. An fourth interval with a difference of five semitones (via some combination of two major seconds and one minor second) and a fourth interval with a difference of six semitones (via three major seconds). The former we can call a <strong>perfect fourth.</strong> The latter is called an <strong>augmented fourth</strong> and only occurs once in a diatonic collection. A possible combination that doesn’t appear in the diatonic set is a fourth made up of two minor seconds and one major second. This we’ll call a <strong>diminished fourth.</strong><br />
+<br />
+Lets speed run the remaining three since this is getting tedious. <span class="math display">\[mS=\text{minor second}\]</span> <span class="math display">\[MS=\text{major second}\]</span> Fifths can be either perfect(ms+3MS), diminished(2ms+2MS), or augmented(4MS).<br />
+Sixths can be major(ms+4MS), minor(2ms+3MS), or augmented (5MS).<br />
+Sevenths can be major(ms+5MS), minor(2ms+4MS), or diminished (3ms+3MS).<br />
+Eights are called <strong>octaves</strong> and if they are in the diatonic collection, then there is only one. An interval made up of 12 semitones or (2ms+5MS). We’ll call this a <strong>perfect octave</strong>. There are of course also augmented octaves(ms+6MS) and diminished octaves(3ms+4MS).<br />
+<br />
+Octaves larger than an either can be called <strong>compound octaves</strong> and can be thought of in terms of <span class="math inline">\(n\cdot octave\)</span> and some interval smaller than an either. For example, we can think of a major <span class="math inline">\(10^{th}\)</span> to be just an octave and a major third.</p>
+<h3 id="exercises">Exercises</h3>
+<ol>
+<li><p>Generate a diatonic collection starting at 6 o’clock</p>
+<p><img src="e2_1.jpg" alt="image" /></p>
+<p>We have generated the G-scale</p></li>
+<li><p>For each of the following give (a) the size of the interval in semitones and (b) the name of the interval in terms of he diatonic collection<em>. They’re shown as notes on a stave in the book but I’ll just write the note names here for simplicity.</em></p>
+<ol>
+<li><p>B to C in key of C - one semitone, minor second</p></li>
+<li><p>D to E in key of C - two semitones, major second</p></li>
+<li><p>B to C# in the key of E - two semitones, major second</p></li>
+<li><p>D# to E in the key of E - one semitone, minor second</p></li>
+<li><p>F to A in key of Bb - four semitones, major third</p></li>
+<li><p>A to C in key of Bb - three semitones, minor third</p></li>
+<li><p>F# to A in key of D - three semitones, minor third</p></li>
+<li><p>A to C# in key of D - four semitones, major third</p></li>
+<li><p>F# to B in key of D - five semitones, perfect fifth</p></li>
+<li><p>A to F in key of C - eight semitones, augmented fifth</p></li>
+<li><p>F to B in key of C - six semitones, augmented fourth</p></li>
+<li><p>A# to D in key of D - four semitones, major third</p></li>
+<li><p>B to F in key of C - six semitones, augmented fourth</p></li>
+<li><p>D to A in key of C - seven semitones, perfect fifth</p></li>
+<li><p>Bb to F# in key of Bb - eight semitones, augmented fifth</p></li>
+<li><p>Db to Ab in key of Ab - seven semitones, perfect fifth</p></li>
+<li><p>B to G in key of C - eight semitones, augmented fifth</p></li>
+<li><p>D to B in key of C - nine semitones, major sixth</p></li>
+<li><p>Bb to G in key of Ab - nine semitones, major sixth</p></li>
+<li><p>Db to B natural in key of Ab - ten semitones, augmented sixth</p></li>
+<li><p>F to E in key of C - eleven semitones, major seventh</p></li>
+<li><p>A to G in key of C - ten semitones, augmented sixth</p></li>
+<li><p>F# to Eb in key of Eb - nine semitones, major sixth</p></li>
+<li><p>Ab to G in key of Eb - eleven semitones, major seventh</p></li>
+</ol></li>
+</ol>
+<h2 id="time">Time</h2>
 <h1 id="revision-history">Revision History</h1>
-<p>07-11-2019: Initial Commit<br />
-</p>
+<p>07-11-2019: started chapter two<br />
+07-12-2019: finished section on pitch</p>
 <p><br />
 <br />
 <em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
