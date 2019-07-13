@@ -1,0 +1,94 @@
+---
+title: AtCoder Beginner Contest 126 D - Even Relation
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>abc126d.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="https://atcoder.jp/contests/abc126/tasks/abc126_d">Link to problem</a><br />
+<strong>Solution</strong><br />
+We can run a Depth-First Search starting on any node and assigning all vertices an even distance from that starting node white. It then follows from the condition that every node not assigned white is black thus solving the problem.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+#include &lt;ext/pb_ds/assoc_container.hpp&gt; //__gnu_pbds::gp_hash_table&lt;int, int&gt; table;
+//priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;, greater&lt;pair&lt;int, int&gt;&gt;&gt; pq;  //min heap
+
+typedef int OwO;
+typedef double UwU;
+
+#define int long long
+#define double long double
+#define INF 1000000000
+#define PI 3.14159265358979323846
+#define watch(x) cout &lt;&lt; (#x) &lt;&lt; &quot; is &quot; &lt;&lt; (x) &lt;&lt; endl
+#define pii pair&lt;int, int&gt;
+#define vpii vector&lt;pair&lt;int, int&gt;&gt;
+#define vvi vector&lt;vector&lt;int&gt;&gt;
+#define vi vector&lt;int&gt;
+
+using namespace std;
+
+vi coloring;
+vi visited;
+
+void dfs(vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt;&amp; graph, int x, int sum){
+//  watch(x);
+//  watch(sum);
+//  cout &lt;&lt; endl;
+  if(visited[x])
+    return;
+  visited[x]=1;
+
+  if(sum%2==0)
+    coloring[x]=0;
+
+  for(auto e:graph[x]){
+    int to = e.first;
+    int w = e.second;
+    dfs(graph, to, sum+w);
+  }
+   return;
+}
+
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int N;
+  cin &gt;&gt; N;
+  vector&lt;vector&lt;pair&lt;int, int&gt;&gt;&gt; graph(N, vector&lt;pair&lt;int, int&gt;&gt;());
+  coloring = vector&lt;int&gt;(N, 1);
+  visited = vector&lt;int&gt;(N, 0);
+  for(int x = 0; x&lt;N-1; x++){
+    int u,v,w;
+    cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;
+    u--;
+    v--;
+    graph[u].push_back({v,w});
+    graph[v].push_back({u,w});
+  }
+  dfs(graph, 0, 0);
+
+  for(auto e: coloring)
+    cout &lt;&lt; e &lt;&lt; endl;
+
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

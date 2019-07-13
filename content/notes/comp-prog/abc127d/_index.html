@@ -1,0 +1,78 @@
+---
+title: AtCoder Beginner Contest 127 D - Integer Cards
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>abc127d.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="https://atcoder.jp/contests/abc127/tasks/abc127_d">Link to problem</a><br />
+<strong>Solution</strong><br />
+To find the max sum of the array, we only need to put in C if it increase the sum. In other words, we only insert a C value if it is greater than the current lowest value in our array. To always know the minimum value in our array, we can use a multiset and look at the value at the begin iterator. We store the C and B values in a vector&lt;pair&lt;int,int&gt;&gt; that is sorted in decreasing order. We use a while loop to continually insert the largest possible C value until the previously stated condition is no longer met.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+#include &lt;ext/pb_ds/assoc_container.hpp&gt; //__gnu_pbds::gp_hash_table&lt;int, int&gt; table;
+//priority_queue&lt;pair&lt;int, int&gt;, vector&lt;pair&lt;int, int&gt;&gt;, greater&lt;pair&lt;int, int&gt;&gt;&gt; pq;  //min heap
+
+typedef int OwO;
+typedef double UwU;
+
+#define int long long
+#define double long double
+#define INF 1000000000
+#define PI 3.14159265358979323846
+#define watch(x) cout &lt;&lt; (#x) &lt;&lt; &quot; is &quot; &lt;&lt; (x) &lt;&lt; endl
+#define pii pair&lt;int, int&gt;
+#define vpii vector&lt;pair&lt;int, int&gt;&gt;
+#define vvi vector&lt;vector&lt;int&gt;&gt;
+#define vi vector&lt;int&gt;
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int N,M;
+  cin &gt;&gt; N &gt;&gt; M;
+  multiset&lt;int&gt; t;
+  for(int x = 0; x&lt;N; x++){
+    int tt;
+    cin &gt;&gt; tt;
+    t.insert(tt);
+  }
+  vpii ab(M);
+  for(int x = 0; x&lt;M; x++){
+    int A,B;
+    cin &gt;&gt; A &gt;&gt; B;
+    ab[x]={B,A};
+  }
+  sort(ab.rbegin(), ab.rend());
+  int idx = 0;
+  while(*t.begin()&lt;ab[idx].first){
+    ab[idx].second--;
+    t.erase(t.begin());
+    t.insert(ab[idx].first);
+    if(ab[idx].second == 0)
+      idx++;
+  }
+  cout &lt;&lt; accumulate(t.begin(), t.end(), (int)0) &lt;&lt; endl;
+
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

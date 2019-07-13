@@ -21,7 +21,7 @@ title: AtCoder Beginner Contest 128 D - enqueue
   <![endif]-->
 </head>
 <body>
-<p><a href="https://atcoder.jp/contests/abc128/tasks/abc128_d&lt;Paste&gt;">Link to problem</a><br />
+<p><a href="https://atcoder.jp/contests/abc128/tasks/abc128_d">Link to problem</a><br />
 <strong>Solution</strong><br />
 What we can do is use a nested for loop to try all possible cases. The outer loop will keep track of how many we’ll take from the left(tl) of the deque and the inner loop will keep track of how many we will take from the right(tr) of the deque. Inside the inner loop we’ll generate the hand given by taking tl from the front of the deque and tr from the right of the deque. From there we’ll simulate putting items from our hand back back into the deque by by removing the M smallest elements where M is the min(num_negative_elements, K-(tl+tr)). We do this ensure that we get rid of as many negative elements as possible (in the case where there are more negative elements than we have moves left) or all the negative elements(in which case we’ll end up with leftover moves.) Once that’s done, we sum up the elements in our hand and properly update the output value. Once the nested for loop is done running, we should have our answer. I’m not gonna analyze the complexity of this solution but it’s something like <span class="math display">\[50\cdot 50 \cdot (100 + 100lg(100) +100)\]</span> which is a lot smaller than <span class="math inline">\(10^9\)</span>.<br />
 <strong>Code</strong></p>
