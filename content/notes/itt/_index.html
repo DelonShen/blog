@@ -23,7 +23,7 @@ title: An Introduction to Tonal Theory(Westergaard) Notes
 <body>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#chapter-two-notes">Chapter Two: Notes</a><ul>
+<li><a href="#notes">Notes</a><ul>
 <li><a href="#pitch">Pitch</a><ul>
 <li><a href="#collections">Collections</a></li>
 <li><a href="#notating-pitch">Notating Pitch</a></li>
@@ -37,10 +37,16 @@ title: An Introduction to Tonal Theory(Westergaard) Notes
 <li><a href="#loudness">Loudness</a></li>
 <li><a href="#timbre">Timbre</a></li>
 </ul></li>
+<li><a href="#lines">Lines</a><ul>
+<li><a href="#repetition-skips-and-steps">Repetition, Skips, and Steps</a></li>
+<li><a href="#consonance-and-dissonance">Consonance and Dissonance</a></li>
+<li><a href="#exercises-2">Exercises</a></li>
+<li><a href="#linear-operations-and-constructs">Linear operations and constructs</a></li>
+</ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
 </nav>
-<h1 id="chapter-two-notes">Chapter Two: Notes</h1>
+<h1 id="notes">Notes</h1>
 <p>We’ll start by thinking of music a made of notes. Notes can be characterized by four properties.</p>
 <ol>
 <li><p>Pitch - the frequency of the sound</p></li>
@@ -125,10 +131,63 @@ And second part is the same thing but with a eighth reset in front.</p></li>
 <p>We rarely think of loudness as an value like we do for pitch but more as relative to other "loudness." For example, imagine a note in your head. Then imagine a note louder than that. It’s easy to do this since it’s what we’re used to, thinking of loudness as relative. Now try to imagine another note that is louder than the second note you imagined as much as the second note was louder than the first note. Or more formally let the "change" in loudness from the first note to the second note be <span class="math inline">\(x\)</span>. Try to imagine a third note that is <span class="math inline">\(x\)</span> louder than the second note. This in turn becomes much more complicated. You’d be hard pressed to find a group of 3 people who imagine the same "loudness" of the third note. This is to illustrate the differences between how we think of loudness vs. how we think of pitch for example. The reason for this is because, unlike pitch or time, <em>we use loudness to convey something other than loudness.</em> Think of your metronome for example. It’s alternating between a louder and softer note but we think of that as upbeat and downbeat instead of loud note soft note. In real music, loudness also varies greatly even in the same "class" of loudness. If we measure the "loudness" of a piano player playing a section labeled mf (mezzo-forte), the loudness isn’t the same(or it shouldn’t be.) And if we measured him again at pp(pianissimo) the only thing we should be able to agree on is that he is playing softer. Loudness also comes with context and is supposed to convey something that isn’t itself loudness. It’s part of a contextual language that isn’t explicit like pitch and time.</p>
 <h2 id="timbre">Timbre</h2>
 <p>Timbre’s a funny thing. Sing a middle C and then play it on the piano with the same loudness. They both have the same pitch, length, and loudness, but they’re different. There’s some quality about them that isn’t the same, but what is it? Lets imagine that we can quantify that difference in "quality" between the piano and the voice as <span class="math inline">\(x\)</span>. Can we imagine a note with the same difference in quality, <span class="math inline">\(x\)</span>, from the piano note? Or can we imagine a note with less of that quality than a piano note or more of that quality than the voice note? I sure as heck can’t.</p>
+<h1 id="lines">Lines</h1>
+<p>Notes can be combined into chains of consecutive notes. We’ll call these chains <strong>lines.</strong> For two notes to be consecutive, they must satisfy the following conditions.</p>
+<ol>
+<li><p>The two notes start at different times</p></li>
+<li><p>No note can start between the two notes</p></li>
+<li><p>One note must end before the other begins.</p></li>
+</ol>
+<p>We can think of a piece of music as multiple lines occurring at the same time.</p>
+<h2 id="repetition-skips-and-steps">Repetition, Skips, and Steps</h2>
+<p>There are three possible intervals between consecutive notes in any given line. The first is a where we play the same note again. The next is a <strong>step</strong> where there is a minor/major second difference between two notes. The final kind of interval is a <strong>skip</strong> which means there’s a difference that is greater than a minor/major second. Each of these intervals affect the conceptual status of the first note. A repetition confirms the conceptual status of the first note by <em>explicitly confirming</em> it. A step confirms the conceptual status of the first note by <em>explicitly denying</em> it. And the skip leaves the conceptual status of the first note in question until it is confirmed or denied further along in the line.</p>
+<h2 id="consonance-and-dissonance">Consonance and Dissonance</h2>
+<p>Intervals can be classified into two categories, <strong>consonant</strong> and <strong>dissonant</strong>. Consonant intervals are</p>
+<ol>
+<li><p>Perfect Unisons</p></li>
+<li><p>Perfect Octaves</p></li>
+<li><p>Perfect <span class="math inline">\(5^{th}\)</span></p></li>
+<li><p>Perfect <span class="math inline">\(4^{th}\)</span> where the bottom note isn’t the lowest note that is currently being played</p></li>
+<li><p>Major/Minor <span class="math inline">\(3^{rd}\)</span></p></li>
+<li><p>Major/Minor <span class="math inline">\(6^{th}\)</span></p></li>
+</ol>
+<p>Consecutive notes that differ by a consonant interval can be thought of as stable. Dissonant intervals are</p>
+<ol>
+<li><p>Perfect <span class="math inline">\(4^{th}\)</span> where the bottom note is the lowest note that is currently being played</p></li>
+<li><p>Major/Minor <span class="math inline">\(7^{th}\)</span></p></li>
+<li><p>Major/Minor <span class="math inline">\(2^{nd}\)</span></p></li>
+<li><p>Augmented/diminished intervals</p></li>
+</ol>
+<h2 id="exercises-2">Exercises</h2>
+<ol>
+<li><p>Mark the steps</p>
+<p><img src="ex31.png" alt="image" /></p></li>
+<li><p>Mark the dissonant intervals</p>
+<p><img src="ex32.png" alt="image" /></p></li>
+<li><p>Mark the dissonant skips</p>
+<p><img src="ex33.png" alt="image" /></p></li>
+</ol>
+<h2 id="linear-operations-and-constructs">Linear operations and constructs</h2>
+<p>Lets define the linear construct <strong>rearticulations</strong> with a series of operations. First we have a note which we know the pitch, time when it begins, and duration. Now lets take two notes with the following properties</p>
+<ol>
+<li><p>Their durations are equal and the sum of their durations equals the original note duration</p></li>
+<li><p>They both have the same pitch as the original note</p></li>
+<li><p>The first of the two notes begins at the same time as the original note.</p></li>
+</ol>
+<p>Something to note is that we should think of the pitch of the second note in terms of the first note. In other words, the first note has <strong>conceptual priority.</strong><br />
+<br />
+Now lets imagine two notes of a rearticulation as a member of a diatonic set. We’ll take the later part of the first note and change it to a adjacent member of the diatonic set.</p>
+<p><img src="3ex.png" alt="image" /></p>
+<p>We’ll call this added note a <strong>neighbor</strong> and the linear structure a <strong>neighbor embellishment.</strong> We think of the neighbor in terms of the two notes of the same pitch therefore we can say that the repeated notes have conceptual priority over the neighbor. Sometimes we also have to consider when a neighbor is not part of the diatonic set we’re considering. If the neighbor is only a minor second away from the repeated notes then we can think that this note was changed just to intensify the sense of adjacency.</p>
+<p><img src="3ex2.png" alt="image" /></p>
+<p>If it’s a major second away however, then we have to consider the embellishment in terms of another diatonic set.</p>
+<p><img src="3ex3.png" alt="image" /></p>
 <h1 id="revision-history">Revision History</h1>
 <p>07-11-2019: started chapter two<br />
 07-12-2019: finished section on pitch<br />
-07-13-2019: finished chapter 2</p>
+07-13-2019: finished chapter 2<br />
+07-14-2019: began chapter 3<br />
+</p>
 <p><br />
 <br />
 <em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
