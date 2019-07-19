@@ -15,6 +15,7 @@ title: Effective C++(Meyers) Notes
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -22,13 +23,17 @@ title: Effective C++(Meyers) Notes
 <body>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#chapter-1-accustoming-yourself-to-c">Chapter 1: Accustoming Yourself to C++</a><ul>
 <li><a href="#view-c-as-a-federation-of-languages.">View C++ as a federation of languages.</a></li>
 <li><a href="#prefer-consts-enums-and-inlines-to-defines">Prefer consts, enums, and inlines to #defines</a></li>
 <li><a href="#use-const-whenever-possible">Use const whenever possible</a></li>
+<li><a href="#make-sure-that-objects-are-initialized-before-theyre-used">Make sure that objects are initialized before they’re used</a></li>
+</ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
 </nav>
-<h1 id="view-c-as-a-federation-of-languages.">View C++ as a federation of languages.</h1>
+<h1 id="chapter-1-accustoming-yourself-to-c">Chapter 1: Accustoming Yourself to C++</h1>
+<h2 id="view-c-as-a-federation-of-languages.">View C++ as a federation of languages.</h2>
 <p>Primary sub-languages of C++ are</p>
 <ol>
 <li><p>C</p></li>
@@ -37,7 +42,7 @@ title: Effective C++(Meyers) Notes
 <li><p>STL</p></li>
 </ol>
 <p><strong>tldr:</strong> effective c++ varies based on which "sub-language" you’re using</p>
-<h1 id="prefer-consts-enums-and-inlines-to-defines">Prefer consts, enums, and inlines to #defines</h1>
+<h2 id="prefer-consts-enums-and-inlines-to-defines">Prefer consts, enums, and inlines to #defines</h2>
 <p>Basically, you should prefer the compiler over preprocessing. For example lets look at <code>#define PI 3.14</code>. The compiler may never see PI and put it into a symbol table and if your compiler spits out an error relating to the constant, it could refer to the actual number 3.14 instead of PI. Using define could also lead to bulkier code due to blind substitution of the macro name. Strings are preferred to char*. Class specific constants should be a member of that class (to limit scope) and be declared static (to avoid creating multiple copies.) e.g.</p>
 <pre><code>  class frog{
     private:
@@ -77,7 +82,7 @@ int main(){
   f(a&gt;b?a:b);
 }</code></pre>
 <p><strong>tldr:</strong> use const, enums and inlines instead of #define</p>
-<h1 id="use-const-whenever-possible">Use const whenever possible</h1>
+<h2 id="use-const-whenever-possible">Use const whenever possible</h2>
 <p>If const appears before an (*) then the data is const, if it appears after (*) then the pointer is const</p>
 <pre><code>char greeting[]=&quot;hola&quot;;
 char* p = greeting;               //non const pointer
@@ -89,8 +94,74 @@ const char * const p = greeting;  //const pointer
 <p>We can also use const in function declarations to avoid mistakes like <code>if(a*b=c)</code>.</p>
 <pre><code>class Rational{...};
 const Rational operator*(...) //makes (a*b)=c illegal</code></pre>
+<p>Const member functions are useful by making us able to work with const objects. These often arise in programming when we past by reference to const. There are two kinds of const, <em>bitwise constness</em> and <em>logical constness.</em> The former thinks that a member function is const if it doesn’t modify any non-static data members. But some function that aren’t very const pass this test for constness. e.g.</p>
+<pre><code>class CTextBlock {
+public:
+    char&amp; operator[](std::size_t position) const 
+    { return pText[position]; }
+};</code></pre>
+<p>What we want instead is logical constnes which allows us to modify data members only in ways the client cannot tell. For this we can use the <code>mutable</code> feature of C++.</p>
+<pre><code>class CTextBlock{
+  public:
+    std::size_t length() const;
+  private:
+    char* pText;
+    mutable std::size_t textLength;
+    mutable bool lengthIsValid;
+};
+std::size_t CTextBlock::length() const{
+  if(!lengthIsValid){
+    textLength = std::strlen(pText);
+    lengthIsValid = true;
+  }
+  return textLength;
+}</code></pre>
+<p><code>const</code> and <code>non-const</code> member functions don’t have to be repeated. What we can use is const_cast!.</p>
+<pre><code>class saveMe{
+  public:
+    ...
+    const char&amp; operator[](std::size_t position){ //big const [] operator
+      ... //imagine lots of code here please
+      return UwU[position];
+    }
+    char&amp; operator[](std::size_t position){ //another [] operator but we don&#39;t want to retype or copy code
+      //changes const char&amp; to char&amp; 
+      //makes this object const
+      //calls the const version for code saving!
+      return const_cast&lt;char&amp;&gt;(static_cast&lt;const saveMe&amp;&gt;(*this)[position]);
+    }
+};</code></pre>
+<p><strong>tldr:</strong></p>
+<ol>
+<li><p>Const helps compiler find usage errors</p></li>
+<li><p>compilers like bitwise constness be we want logical constness</p></li>
+<li><p>code duplication can be avoided by calling the const function from the non-const function</p></li>
+</ol>
+<h2 id="make-sure-that-objects-are-initialized-before-theyre-used">Make sure that objects are initialized before they’re used</h2>
+<p>Using un-initialized variables in spooky don’t do it. Just initialize all your objects either manually or with a constructor. For example lets say we have an object pillow with a declared private variable name. In the constructor we’d want something like</p>
+<pre><code>pillow::pillow(const std::string&amp; s) : name(s) {}</code></pre>
+<p>Instead of</p>
+<pre><code>pillow::pillow(const std::string&amp; s){
+  name=s;
+}</code></pre>
+<p>since the latter is a assignment, not an initialization. Initialization is faster since it’s just one call to the copy constructor instead of a call to the default constructor and then an assignment. The big takeaway is always use initialization lists because they’re sometimes required and usually at least more efficient.<br />
+The order that data is initialized is base classes <span class="math inline">\(\rightarrow\)</span> derived classes <span class="math inline">\(\rightarrow\)</span> data members in order of declaration. We should always just write the initializer list in the same order as the variables are declared.<br />
+Now lets try to analyze this fun sentence: <em>the order of initialization of non-local static objects defined in different translation units.</em> <em>Static</em> objects are created and don’t disappear until the end of the program. Static objects inside functions are called <em>local static objects</em> and everything else is <em>non-local.</em> A <em>translation unit</em> is a source file and its #include files. Basically, we don’t want non-local static objects, we want to turn them all into local static objects to guarantee that they’re initialized. We do this through defining them static in functions. E.g.</p>
+<pre><code>class FileSystem {...};
+FileSystem&amp; tfs(){
+  static FileSystem fs;
+  return fs;
+}</code></pre>
+<p><strong>tldr:</strong></p>
+<ol>
+<li><p>Manually initialize objects</p></li>
+<li><p>use initialization lists instead of assign and list members in a initialization list in the same order you declared them</p></li>
+<li><p>replace non-local static objects with local static objects</p></li>
+</ol>
 <h1 id="revision-history">Revision History</h1>
-<p>07-18-2019: began book</p>
+<p>07-18-2019: began book<br />
+07-19-2019: finished item 3 and 4<br />
+</p>
 <p><br />
 <br />
 <em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>

@@ -15,3 +15,7 @@ title: Competitve Programming Solutions
 
 [Codeforces Round 266 (Div. 2) C - Number of Ways](266c)
 
+[Codeforces Round 306 (Div. 2) A - Two Substrings](306a)
+
+[Codeforces Round 321 (Div. 2) C - Kefa and Park](321c)
+
