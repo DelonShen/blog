@@ -11,3 +11,7 @@ title: Competitve Programming Solutions
 
 [AtCoder Beginner Contest 125 D - Flipping Signs](abc125d)
 
+[Codeforces Round 295 (Div. 2) B - Two Buttons](295b)
+
+[Codeforces Round 266 (Div. 2) C - Number of Ways](266c)
+

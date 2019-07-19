@@ -1,0 +1,98 @@
+---
+title: Effective C++(Meyers) Notes
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>notes</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#view-c-as-a-federation-of-languages.">View C++ as a federation of languages.</a></li>
+<li><a href="#prefer-consts-enums-and-inlines-to-defines">Prefer consts, enums, and inlines to #defines</a></li>
+<li><a href="#use-const-whenever-possible">Use const whenever possible</a></li>
+<li><a href="#revision-history">Revision History</a></li>
+</ul>
+</nav>
+<h1 id="view-c-as-a-federation-of-languages.">View C++ as a federation of languages.</h1>
+<p>Primary sub-languages of C++ are</p>
+<ol>
+<li><p>C</p></li>
+<li><p>Object Oriented C++</p></li>
+<li><p>Template C++</p></li>
+<li><p>STL</p></li>
+</ol>
+<p><strong>tldr:</strong> effective c++ varies based on which "sub-language" you’re using</p>
+<h1 id="prefer-consts-enums-and-inlines-to-defines">Prefer consts, enums, and inlines to #defines</h1>
+<p>Basically, you should prefer the compiler over preprocessing. For example lets look at <code>#define PI 3.14</code>. The compiler may never see PI and put it into a symbol table and if your compiler spits out an error relating to the constant, it could refer to the actual number 3.14 instead of PI. Using define could also lead to bulkier code due to blind substitution of the macro name. Strings are preferred to char*. Class specific constants should be a member of that class (to limit scope) and be declared static (to avoid creating multiple copies.) e.g.</p>
+<pre><code>  class frog{
+    private:
+      static const int age = 42;
+      ...
+  };</code></pre>
+<p>In the case the above syntax isn’t allowed by the (usually old) compiler.</p>
+<pre><code>class frog{
+  private:
+    static const int age;
+    ...
+};
+const int frog::age = 42;</code></pre>
+<p>The <strong>enum hack</strong> is useful when the compiler doesn’t allow you to declare something with a value but still need that value at compilation (like declaring size of the array.) The exploits the fact that enums can be used in lace of ints.</p>
+<pre><code>class frog{
+  private:
+    enum{age=42};
+    int bob[age];
+    ...
+};</code></pre>
+<p>Using define to run functions is also kinda funny. Lets look at this program:</p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define CALL_WITH_MAX(a,b) f((a)&gt;(b)?(a):(b))
+
+int main(){
+  int a = 5, b=0;
+  printf(&quot;Original value of a: %d\n&quot;,a);
+  CALL_WITH_MAX(++a, b);
+  printf(&quot;a: %d\n&quot;,a); //a: 7
+  CALL_WITH_MAX(++a, b+10);
+  printf(&quot;a: %d\n&quot;,a); //a: 8
+  return 0;
+}</code></pre>
+<p>The first time, a is incremented twice, and the second time a is incremented once. Ain’t that a stinker. Instead we should use inlines.</p>
+<pre><code>template&lt;typename T&gt; inline void callWithMax(const T&amp; a, const T&amp; b) {
+  f(a&gt;b?a:b);
+}</code></pre>
+<p><strong>tldr:</strong> use const, enums and inlines instead of #define</p>
+<h1 id="use-const-whenever-possible">Use const whenever possible</h1>
+<p>If const appears before an (*) then the data is const, if it appears after (*) then the pointer is const</p>
+<pre><code>char greeting[]=&quot;hola&quot;;
+char* p = greeting;               //non const pointer
+                                  //non const data
+const char *p = greeting;         //const data
+char *const p = greeting;         //const pointer
+const char * const p = greeting;  //const pointer
+                                  //const data</code></pre>
+<p>We can also use const in function declarations to avoid mistakes like <code>if(a*b=c)</code>.</p>
+<pre><code>class Rational{...};
+const Rational operator*(...) //makes (a*b)=c illegal</code></pre>
+<h1 id="revision-history">Revision History</h1>
+<p>07-18-2019: began book</p>
+<p><br />
+<br />
+<em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>
