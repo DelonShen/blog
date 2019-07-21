@@ -1,0 +1,9 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Chapter Two: Notes}{1}{section.1}% 
+\contentsline {subsection}{\numberline {1.1}Pitch}{1}{subsection.1.1}% 
+\contentsline {subsubsection}{\numberline {1.1.1}Collections}{1}{subsubsection.1.1.1}% 
+\contentsline {subsubsection}{\numberline {1.1.2}Notating Pitch}{2}{subsubsection.1.1.2}% 
+\contentsline {subsubsection}{\numberline {1.1.3}Naming Intervals}{2}{subsubsection.1.1.3}% 
+\contentsline {subsubsection}{\numberline {1.1.4}Exercises}{2}{subsubsection.1.1.4}% 
+\contentsline {subsection}{\numberline {1.2}Time}{4}{subsection.1.2}% 
+\contentsline {section}{\numberline {2}Revision History}{4}{section.2}% 

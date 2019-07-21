@@ -1,0 +1,73 @@
+---
+title: Codeforces Round 171 (Div. 2) B - Books
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>171b.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="http://codeforces.com/problemset/problem/279/B">Link to problem</a><br />
+<strong>Solution</strong><br />
+For this problem we need a prefix-sum array. Lets call this array <span class="math inline">\(a\)</span>. For every index in <span class="math inline">\(a\)</span> we need to do 3 things.</p>
+<ol>
+<li><p>Figure out how much time we have left after reading that book</p></li>
+<li><p>Binary search to find the element with a value at most <span class="math inline">\(a[index]+time\_left\)</span></p></li>
+<li><p>Calculate the distance between index and the result of our binary search.</p></li>
+</ol>
+<p>The solution is the maximum value of the distance we calculated for any given index.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+typedef int OwO; typedef double UwU;
+#define int long long
+#define double long double
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int n,t;
+  cin &gt;&gt; n &gt;&gt; t;
+  vector&lt;int&gt; a(n+1);
+  for(int x = 0; x&lt;n; x++){
+    int t;
+    cin &gt;&gt; t;
+    a[x+1] = a[x]+t;
+  }
+  if(n==1){
+    if(a[1]&lt;=t)
+      cout &lt;&lt; 1 &lt;&lt; endl;
+    else
+      cout &lt;&lt; 0 &lt;&lt; endl;
+    return 0;
+  }
+
+  int oup = -11234567;
+  for(int x = 1; x&lt;=n; x++){
+    int curr = a[x]-a[x-1];
+    int mx = t-curr;
+    auto temp = upper_bound(a.begin()+x, a.end(), a[x]+mx);
+    oup = max(oup, (int)distance(a.begin()+x, temp));
+  }
+
+  cout &lt;&lt; oup &lt;&lt; endl;
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

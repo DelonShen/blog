@@ -1,0 +1,60 @@
+---
+title: Codeforces Round 274 (Div. 2) C - Exams
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>274c.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="http://codeforces.com/problemset/problem/479/C">Link to problem</a><br />
+<strong>Solution</strong><br />
+We can take a greedy approach to this problem. After reading the input into a array of pairs, we sort the array in increasing order. We initialize our output variable to the early exam date for the first exam in our array. Then we iterate through our sorted array t. At each index, we can only pick the early exam date if it’s later than our current output variable since if it isn’t, the non-decreasing order condition will be violated. After iterating through the array, our output variable should contain the solution.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+typedef int OwO; typedef double UwU;
+#define int long long
+#define double long double
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int n;
+  cin &gt;&gt; n;
+  vector&lt;pair&lt;int, int&gt;&gt; t(n);
+  for(int x = 0; x&lt;n; x++){
+    int a,b;
+    cin &gt;&gt; a &gt;&gt; b;
+    t[x] = {a,b};
+  }
+  sort(t.begin(), t.end());
+  int curr = t[0].second;
+  for(int x = 1; x&lt;n; x++){
+    if(curr &lt;= t[x].second)
+      curr = t[x].second;
+    else
+      curr = t[x].first;
+  }
+
+  cout &lt;&lt; curr &lt;&lt; endl;
+
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

@@ -45,9 +45,6 @@ title: An Introduction to Tonal Theory(Westergaard) Notes
 <li><a href="#linear-operations-and-constructs">Linear operations and constructs</a><ul>
 <li><a href="#exercises-3">Exercises</a></li>
 </ul></li>
-<li><a href="#triads-the-tonic-and-the-diatonic-degrees">Triads, the Tonic, and the Diatonic Degrees</a><ul>
-<li><a href="#exercises-4">Exercises</a></li>
-</ul></li>
 </ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
@@ -194,32 +191,11 @@ Now lets imagine two notes of a rearticulation as a member of a diatonic set. We
 <p><img src="f32.png" alt="image" /></p>
 <h3 id="exercises-3">Exercises</h3>
 <p><img src="3exp.png" alt="image" /></p>
-<h2 id="triads-the-tonic-and-the-diatonic-degrees">Triads, the Tonic, and the Diatonic Degrees</h2>
-<p><strong>Triads</strong> are formed from the following procedure.</p>
-<ol>
-<li><p>Pick any pitch class, lets pick C.</p></li>
-<li><p>Pick any pitch class that can form a consonant interval with our first pitch class. In our case we can choose E, Eb, F, G, A, Ab. Lets pick E.</p></li>
-<li><p>Pick any pitch class that can form a consonant interval with both our previous pitch classes. Since we picked C and E, now our choices are limited to G and A.</p></li>
-</ol>
-<p>The three pitch classes we’ve chosen form a triad. There are only a few possible pitch classes given that we pick C first. Namely</p>
-<p><img src="f33.png" alt="image" /></p>
-<p>Notice how each triad forms a 5th formed by a major 3rd and a minor third. We define each triad based on the lowest note, aka the <strong>fundamental pitch.</strong> So we have two C triads (CEG and CEbG), two F triads (FAC and FAbC) one A triad (ACE) and one Ab triad (AbCE). The relation between the fundamental pitch and the note a third above it determines the <strong>color</strong> of the chord. If that interval is a minor third then it is a minor triad, if that interval is a major third then it is a major triad. We can think of any tonal piece in terms of a fundamental pitch class, which we’ll call the <strong>tonic.</strong> A tonic triad is the triad with the tonic as the fundamental pitch. If this triad is major we can say the piece is in a major key, if it’s minor then we say the piece is in a minor key. To build a diatonic set from the triad, add notes a 5th above or below each member of the triad.</p>
-<h3 id="exercises-4">Exercises</h3>
-<ol>
-<li><p>Indicate the six different triads that include the pitch class at eight o’clock.</p>
-<p><img src="3ex4.png" alt="image" /></p></li>
-<li><p>On the diagram above, write the name of the other pitch classes</p></li>
-<li><p>On the diagram below write the name of the other pitch classes if eight o’clock was called G# (I just included it on the diagram above again)</p></li>
-<li><p>Label the fundamental pitch class of each triad as I, a fifth above as V and third as III. Add intervening diatonic degrees. (I included that in blue above.)</p></li>
-<li><p>For each of the keys indicated in the circle diagram, write out the degrees of the diatonic collection.</p>
-<p><img src="3exp2.png" alt="image" /></p></li>
-</ol>
 <h1 id="revision-history">Revision History</h1>
 <p>07-11-2019: started chapter two<br />
 07-12-2019: finished section on pitch<br />
 07-13-2019: finished chapter 2<br />
 07-14-2019: began chapter 3<br />
-07-21-2019: finished operations/constructs and "triads, tonics, and the diatonic degrees"<br />
 </p>
 <p><br />
 <br />

@@ -1,0 +1,97 @@
+---
+title: Codeforces Beta Round 1 B - Spreadsheets
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>1b.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="http://codeforces.com/problemset/problem/1/B">Link to problem</a><br />
+<strong>Solution</strong><br />
+The first thing to do is parse the input and determine which type of input it is. Lets define four strings, s1, s2, s3, and s4. We can read a block of chars into s1, then the next block of digits into s2, and then if there are still items in the input, a block of chars into s3 and a block of digits into s4. This way we could use s3 and s4 to determine which type of input we have.<br />
+<strong>For input R(number)C(number):</strong> We need to convert the (number) after C to letters. Lets call this (number) <span class="math inline">\(c\)</span>. Now we basically convert base 10 to base 26. We use a loop to continually store c%26 and integer divide c by 26 until c equals 0. One tricky part about this, however, is when c%26=0. This means we have a ’Z’ on our hands so we need to handle that case specifically. If we’re dealing with a ’Z’ we also need to subtract 1 from c/26. This is because there is an extra power of 26 in that (c/26) that’s actually in the previous "digit" ’Z’.<br />
+<strong>For input (column)(row):</strong> We need to convert (column) from base 26 to base 10. To do this we just multiply each index of (column) with <span class="math inline">\(26^{f}\)</span> times the integer of that char (e.g. A=1, B=2, etc.) and add it to our solution. <span class="math inline">\(f\)</span> is a variable that represents which "digit" we’re on. For example, the last char in (column) is the 0’th digit, the second to last is the 1st digit, and so on.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+typedef int OwO; typedef double UwU;
+#define int long long
+#define double long double
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int N;
+  cin &gt;&gt; N;
+  while(N--){
+    string s;
+    cin &gt;&gt; s;
+    int idx = 0;
+    string s1=&quot;&quot;, s2=&quot;&quot;, s3=&quot;&quot;, s4=&quot;&quot;;
+    int n = s.size();
+    for(; idx&lt;n; idx++){
+      if(s[idx]&lt;&#39;A&#39; || s[idx]&gt;&#39;Z&#39;)
+        break;
+      s1+=s[idx];
+    }
+    for(; idx&lt;n; idx++){
+      if(s[idx]&lt;&#39;0&#39; || s[idx]&gt;&#39;9&#39;)
+        break;
+      s2 += s[idx];
+    }
+    for(; idx&lt;n; idx++){
+      if(s[idx]&lt;&#39;A&#39; || s[idx]&gt;&#39;Z&#39;)
+        break;
+      s3+=s[idx];
+    }
+    for(; idx&lt;n; idx++){
+      if(s[idx]&lt;&#39;0&#39; || s[idx]&gt;&#39;9&#39;)
+        break;
+      s4 += s[idx];
+    }
+    if(s4!=&quot;&quot;){
+      int c= stoi(s4);
+      string p1=&quot;&quot;;
+      while(c){
+        char ttt = (char)(c%26+&#39;A&#39;-1);
+        if(ttt&lt;=&#39;@&#39;){
+          ttt += 26;
+          c--;
+        }
+        p1 += ttt;
+        c/=26;
+      }
+      cout &lt;&lt; string(p1.rbegin(), p1.rend()) &lt;&lt; s2 &lt;&lt; endl;
+    }
+    else{
+      int c = 0;
+      int factor = 0;
+      for(int x = s1.size()-1; x&gt;=0; x--){
+        c += pow(26,factor)*(s1[x]-&#39;A&#39;+1);
+        factor++;
+      }
+      cout &lt;&lt; &#39;R&#39; &lt;&lt; s2 &lt;&lt; &#39;C&#39; &lt;&lt; c &lt;&lt; endl;
+    }
+  }
+
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

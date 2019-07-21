@@ -19,3 +19,9 @@ title: Competitve Programming Solutions
 
 [Codeforces Round 321 (Div. 2) C - Kefa and Park](321c)
 
+[Codeforces Round 171 (Div. 2) B - Books](171b)
+
+[Codeforces Round 274 (Div. 2) C - Exams](274c)
+
+[Codeforces Beta Round 1 B - Spreadsheets](1b)
+
