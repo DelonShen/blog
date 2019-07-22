@@ -29,6 +29,14 @@ title: Effective C++(Meyers) Notes
 <li><a href="#use-const-whenever-possible">Use const whenever possible</a></li>
 <li><a href="#make-sure-that-objects-are-initialized-before-theyre-used">Make sure that objects are initialized before they’re used</a></li>
 </ul></li>
+<li><a href="#constructors-destructor-and-assignment-operators">Constructors, Destructor, and Assignment Operators</a><ul>
+<li><a href="#know-what-functions-c-silently-writes-and-calls">Know what functions C++ silently writes and calls</a></li>
+<li><a href="#explicitly-disallow-the-use-of-compiler-generated-functions-you-do-not-want.">Explicitly disallow the use of compiler-generated functions you do not want.</a></li>
+<li><a href="#declare-destructor-virtual-in-polymorphic-base-classes.">Declare destructor virtual in polymorphic base classes.</a></li>
+<li><a href="#prevent-exceptions-from-leaving-destructor">Prevent Exceptions from Leaving Destructor</a></li>
+<li><a href="#never-call-virtual-functions-during-constructiondestruction">Never call virtual functions during construction/destruction</a></li>
+<li><a href="#have-assignment-operators-return-a-reference-to-this.">Have assignment operators return a reference to *this.</a></li>
+</ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
 </nav>
@@ -158,9 +166,71 @@ FileSystem&amp; tfs(){
 <li><p>use initialization lists instead of assign and list members in a initialization list in the same order you declared them</p></li>
 <li><p>replace non-local static objects with local static objects</p></li>
 </ol>
+<h1 id="constructors-destructor-and-assignment-operators">Constructors, Destructor, and Assignment Operators</h1>
+<h2 id="know-what-functions-c-silently-writes-and-calls">Know what functions C++ silently writes and calls</h2>
+<p>If you don’t write default constructors, copy constructors, destructor, and copy assignment, the compiler generates them for you based on what you use an object for.</p>
+<pre><code>class empty{};
+empty A; //default constructor and destructor generated 
+empty B(A); //copy constructor generated
+A=B; //copy assignment generated.</code></pre>
+<p>The default constructor and destructor serve as a place for constructors and destructor of base classes and non-static members to be put. The destructor is virtual only if the class derives from another class with a virtual destructor. Copy constructor/assignment copy non-static members from the source to the target object. If a constructor exists, then the compiler won’t generated a default constructor.<br />
+<strong>tldr:</strong> the compiler might implicitly generate default constructors, copy constructors, destructor, and copy assignments.</p>
+<h2 id="explicitly-disallow-the-use-of-compiler-generated-functions-you-do-not-want.">Explicitly disallow the use of compiler-generated functions you do not want.</h2>
+<p>Don’t want the pesky compiler to generate a copy-assignment/constructor for you but also don’t want these functions to work? Then <span class="underline">declare and make private</span> the functions you don’t want to be unusable and don’t want the compiler to generate. This would generate a link-time/run-time error when people try to use the copy constructor and assignment. But we can do better! Lets make a class that’ll let these errors be detected at compile time.</p>
+<pre><code>class Uncopyable{
+  protected:
+    Uncopyable() {}
+    ~Uncopyable() {}
+  private:
+    Uncopyable(const Uncopyable&amp;)
+    Uncopyable&amp; operator=(const Uncopyable^);
+};</code></pre>
+<p>And when we have a class that we don’t want a copy assignment/constructor for. we just inherit stuff from uncopyable.</p>
+<pre><code>class Pillows:private Uncopyable{
+  ...
+};</code></pre>
+<p><strong>tldr:</strong> To disallow functions that the compiler generates. Declare/make private these functions. A base class like Uncopyable works too.</p>
+<h2 id="declare-destructor-virtual-in-polymorphic-base-classes.">Declare destructor virtual in polymorphic base classes.</h2>
+<p>Lets say you want to get the time and you define a class TimeKeeper in which multiple methods of getting the time is derived from. Now a user wants to know the time but doesn’t really care about the method for getting the time so you define a function TimeKeeper* getTimeKeeper() that allows a pointer to any class derived from TimeKeeper. When you call the destructor on the pointer, the object is only partially destroyed since we call TimeKeeper’s destructor instead of the class’s specific destructor (e.g. AtomicClock’s destructor). To avoid this we should declare TimeKeeper’s destructor to be virtual so the destructor works as intended and we don’t get funky partially deleted objects. You don’t want to declare destructor virtual all the time though, for classes that aren’t meant to be base classes, declaring a destructor increases the size of that object. This is because there is some extra overhead associated with using virtual functions. Deriving a class from a class with non-virtual destructor(like most stl containers) can be dangerous too. For example the following code is in undefined behavior territory.</p>
+<pre><code>class SpecialString: public std::string{....};
+SpecialString *pss = new SpecialString(&quot;I&#39;m a big idiot&quot;);
+std::string *ps;
+ps = pss;
+delete ps; </code></pre>
+<p>If you have a class you want to be abstract but don’t have any pure-virtual functions, declare the destructor as pure virtual</p>
+<pre><code>class lmao{
+  public:
+   virtual ~lmao() = 0;
+};
+lmao::~lmao(){} //define it since ~lmao will be called from derived classes.</code></pre>
+<p><strong>tldr:</strong></p>
+<ol>
+<li><p>Polymorphic base classes / class with any virtual functions should have a virtual destructor</p></li>
+<li><p>Classes not designed to be base classes or be used polymorphically should not have virtual destructor.</p></li>
+</ol>
+<h2 id="prevent-exceptions-from-leaving-destructor">Prevent Exceptions from Leaving Destructor</h2>
+<p>Destructor throwing exception is bad since it can lead to undefined behavior or just premature termination. There are two unappealing ways to deal with this in the destructor which is by ending the program with std::abort() or just eat the exception and keep chugging. One way to deal with exceptions to create a non-destructor function does some operations the destructor would do and leave it to the client to call this "close" function so that they have a chance to react to the exception instead of the destructor just flailing.</p>
+<h2 id="never-call-virtual-functions-during-constructiondestruction">Never call virtual functions during construction/destruction</h2>
+<p>When calling the constructor of a derived class, the base class is constructed first and all of C++ treats that object as the base class until the derived class construction begins. This is because the local members of the derived class aren’t even initialized yet so for all intents and purposes they don’t exist. Destructors are similar. Once the derived classes destructor is called, it’s treated as if it’s the base class while the base class destructor is called. Because of this, virtual functions won’t work as you think they will in constructors/destructors.<br />
+<strong>tldr:</strong> this one’s short as heck.</p>
+<h2 id="have-assignment-operators-return-a-reference-to-this.">Have assignment operators return a reference to *this.</h2>
+<p>This is just convention for all the built-in-types and stl. e.g.</p>
+<pre><code>class Widget{
+  public:
+    Widget&amp; operator+=(const Widget&amp; rhs){
+      ...
+      return *this;
+    }
+    Widget&amp; oeratpr=(int rhs){
+      ...
+      return *this;
+    }
+};</code></pre>
+<p><strong>tldr:</strong> it’s one sentence.</p>
 <h1 id="revision-history">Revision History</h1>
 <p>07-18-2019: began book<br />
 07-19-2019: finished item 3 and 4<br />
+07-22-2019: finished items 5-10<br />
 </p>
 <p><br />
 <br />
