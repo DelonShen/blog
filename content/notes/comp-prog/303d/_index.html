@@ -1,0 +1,61 @@
+---
+title: Codeforces Round 303 (Div. 2) D - Queue
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>303d.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="http://codeforces.com/contest/545/problem/D">Link to problem</a><br />
+<strong>Solution</strong><br />
+We can take a greedy approach to this problem. We sort the people based on how long it takes to serve them. Then we iterate through the people. If the current person is satisfied then we increment our output and add their time to the current time waited. If the current person is not satisfied then we skip forward until we find someone who will be satisfied with the current time waited, increment our output and add that person’s time to our time waited. We then start iterating forward from that person we skipped to. Every person between the previously satisfied person and the person we skipped to will be dissatisfied no mater what.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+typedef int OwO; typedef double UwU;
+#define int long long
+#define double long double
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int n;
+  cin &gt;&gt; n;
+  vector&lt;int&gt; t(n);
+  for(int x = 0; x&lt;n; x++)
+    cin &gt;&gt; t[x];
+  sort(t.begin(), t.end());
+  int tme = 0;
+  int oup = 0;
+  for(int x = 0; x&lt;t.size(); x++){
+    if(tme&lt;=t[x])
+      oup++;
+    else{
+      while(x&lt;t.size() &amp;&amp; tme&gt;t[x])
+        x++;
+      if(x&lt;t.size() &amp;&amp; tme&lt;=t[x])
+        oup++;
+    }
+    if(x&lt;t.size())
+      tme+=t[x];
+  }
+  cout &lt;&lt; oup &lt;&lt; endl;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

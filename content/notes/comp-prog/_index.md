@@ -25,3 +25,7 @@ title: Competitve Programming Solutions
 
 [Codeforces Beta Round 1 B - Spreadsheets](1b)
 
+[Codeforces Round 303 (Div. 2) D - Queue](303d)
+
+[Codeforces Round 292 (Div. 2) C - Drazil and Factorial](292c)
+

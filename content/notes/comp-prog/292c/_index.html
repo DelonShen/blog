@@ -1,0 +1,78 @@
+---
+title: Codeforces Round 292 (Div. 2) C - Drazil and Factorial
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>292c.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="http://codeforces.com/problemset/problem/515/C">Link to problem</a><br />
+<strong>Solution</strong><br />
+For every digit there is one optimal expansion of that digit in <span class="math inline">\(a\)</span>. <span class="math display">\[0\rightarrow delete\]</span> <span class="math display">\[1\rightarrow delete\]</span> <span class="math display">\[2\rightarrow 2!\rightarrow 2\]</span> <span class="math display">\[3\rightarrow 3!\rightarrow 3\]</span> <span class="math display">\[4\rightarrow 4! = 2*2*3!\rightarrow 223\]</span> <span class="math display">\[5\rightarrow 5!\rightarrow 5\]</span> <span class="math display">\[6\rightarrow 6!=3*2*5!=3!5!\rightarrow 35\]</span> <span class="math display">\[7\rightarrow 7!\rightarrow 7\]</span> <span class="math display">\[8\rightarrow 8!=2*2*2*7!\rightarrow 2227\]</span> <span class="math display">\[9\rightarrow 9!=3*3*8!=3*3*2*2*2*7!=2!3!3!7!\rightarrow 2337\]</span> We create a new vector and store each new digit that is transformed from its original digit in <span class="math inline">\(a\)</span> and sort this vector in decreasing order. If we combine all the digits into a string, we have our output.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+typedef int OwO; typedef double UwU;
+#define int long long
+#define double long double
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int n;
+  cin &gt;&gt; n;
+  vector&lt;int&gt; t(n);
+  for(int x = 0; x&lt;n; x++){
+    char tt;
+    cin &gt;&gt; tt;
+    t[x] = tt-&#39;0&#39;;
+  }
+  sort(t.begin(), t.end());
+  vector&lt;int&gt; oup;
+  for(int x = 0; x&lt;n; x++){
+    if(t[x]==6){
+      oup.push_back(3);
+      oup.push_back(5);
+    }
+    else if(t[x]==9){
+      oup.push_back(7);
+      oup.push_back(3);
+      oup.push_back(3);
+      oup.push_back(2);
+    }
+    else if(t[x]&gt;1 &amp;&amp; t[x]%2==0){
+      if(t[x]&gt;2)
+        oup.push_back(t[x]-1);
+      while(t[x]&gt;1){
+        oup.push_back(2);
+        t[x]/=2;
+      }
+    }
+    else if(t[x]&gt;1)
+      oup.push_back(t[x]);
+  }
+  sort(oup.rbegin(), oup.rend());
+  for(auto e:oup)
+    cout &lt;&lt; e;
+  cout &lt;&lt; endl;
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>
