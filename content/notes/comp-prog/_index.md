@@ -29,3 +29,5 @@ title: Competitve Programming Solutions
 
 [Codeforces Round 292 (Div. 2) C - Drazil and Factorial](292c)
 
+[Educational Codeforces Round 30 B - Balanced Substring](e30)
+

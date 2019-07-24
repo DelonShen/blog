@@ -36,6 +36,13 @@ title: Effective C++(Meyers) Notes
 <li><a href="#prevent-exceptions-from-leaving-destructor">Prevent Exceptions from Leaving Destructor</a></li>
 <li><a href="#never-call-virtual-functions-during-constructiondestruction">Never call virtual functions during construction/destruction</a></li>
 <li><a href="#have-assignment-operators-return-a-reference-to-this.">Have assignment operators return a reference to *this.</a></li>
+<li><a href="#handle-assignment-to-self-in-operator">Handle assignment to self in operator=</a></li>
+<li><a href="#copy-all-parts-of-an-object">Copy all parts of an object</a></li>
+</ul></li>
+<li><a href="#resource-management">Resource Management</a><ul>
+<li><a href="#use-objects-to-manage-resources">Use objects to manage resources</a></li>
+<li><a href="#think-carefully-about-copying-behavior-in-resource-managing-classes">Think carefully about copying behavior in resource managing classes</a></li>
+<li><a href="#provide-access-to-raw-resources-in-resource-managing-classes">Provide access to raw resources in resource-managing classes</a></li>
 </ul></li>
 <li><a href="#revision-history">Revision History</a></li>
 </ul>
@@ -221,16 +228,58 @@ lmao::~lmao(){} //define it since ~lmao will be called from derived classes.</co
       ...
       return *this;
     }
-    Widget&amp; oeratpr=(int rhs){
+    Widget&amp; operatpr=(int rhs){
       ...
       return *this;
     }
 };</code></pre>
 <p><strong>tldr:</strong> it’s one sentence.</p>
+<h2 id="handle-assignment-to-self-in-operator">Handle assignment to self in operator=</h2>
+<p>There are a few ways to make sure assignment to self works as you want it to. The first way is to check with an if statement e.g.</p>
+<pre><code>if(this==&amp;inp) return *this;</code></pre>
+<p>We could also make the assignment exception-safe. This can be achieved via carefully constructing the assignment operator so that it doesn’t get rid of the original data until it’s copied.</p>
+<pre><code>pilow&amp; pillow::operator=(const pillow&amp; rhs){
+  pillow *pOrig = pb; //gets current value of pointer
+  pb = new stuffing(*rhs.pb); //copies it to desired location
+  delete pOrig; //deletes original data
+}</code></pre>
+<p>Another technique is called copy-and-swap which is just what it sounds like.</p>
+<pre><code>class pillow{
+  void swap(pillow&amp; rhs); //swap *this with rhs
+  ...
+};
+pillow&amp; pillow(const pillow&amp; rhs){
+  pillow temp(rhs);
+  swap(temp);
+  return *this;
+}</code></pre>
+<p><strong>tldr:</strong> make sure assignment operator deals with self-assignment okay with either an identity check, copy-and-swap, or careful ordering.</p>
+<h2 id="copy-all-parts-of-an-object">Copy all parts of an object</h2>
+<p>According to Meyers, compilers are petty people who get pissy when you don’t want to use their copy constructor/assignment and to retaliate, they don’t tell you when your copy constructor/assignment isn’t doing a total copy. This can arise is a few ways from just simply forgetting when you add a new member to not initializing/copying things properly as a derived class. When your copy assignment/constructor have similar bodies, it’s normal to have a thrid private function called init to reduce this code duplication.<br />
+<strong>tldr:</strong> make sure you’re copying all data (including base class parts) and use a third private function to reduce code-redundancy in your copy constructor/assignment.</p>
+<h1 id="resource-management">Resource Management</h1>
+<h2 id="use-objects-to-manage-resources">Use objects to manage resources</h2>
+<p>Always deallocating resources is sometimes a hard trick to pull off. But we’ve got a neat tool to make it easy, resource managing objects. These objects handle deallocating resources when they’re no longer needed. A common resource managing object is the <code>auto_ptr</code>. This object automatically deletes what it points to when it’s destroyed and has a neat feature to prevent multiple deletions. Copy assignment and constructors makes it so that the new object has complete ownership and the old object is set to null</p>
+<pre><code>auto_ptr&lt;pillow&gt; p1(newPillow()); //p1 points to object created by new pillow
+auto_ptr&lt;pillow&gt; p2(p1);          //p1 is now null and p2 points to what p1 originally pointed to
+p1 = p2                           //p2 is now null and p1 points to what p2 originally pointed to</code></pre>
+<p>Another neat resource managing object is the <code>shared_ptr</code> which is a reference counting smart pointer that deallocates once nothing points to a particular resource anymore. Copy works normally, not like how <code>auto_ptr</code> works. One thing to note, however, is that these two neat smart pointer boys use <code>delete</code> and not <code>delete []</code> meaning that using these with dynamically allocated arrays is a bad idea. <strong>tldr:</strong> use resource managing objects that get resources in their constructor and release resources in their destructor</p>
+<h2 id="think-carefully-about-copying-behavior-in-resource-managing-classes">Think carefully about copying behavior in resource managing classes</h2>
+<p>There are a few options to deal with copying of resource management objects</p>
+<ol>
+<li><p>Disallow copying (see 2.2 for implementation of uncopyable)</p></li>
+<li><p>Resource count(like <code>shared_ptr</code>) and release once nothing uses the resource anymore</p></li>
+<li><p>Just copy the underlying resource</p></li>
+<li><p>Pass ownership of the resources (like in <code>auto_ptr</code>)</p></li>
+</ol>
+<p><strong>tldr:</strong> see above</p>
+<h2 id="provide-access-to-raw-resources-in-resource-managing-classes">Provide access to raw resources in resource-managing classes</h2>
+<p>For something like <code>auto_ptr</code> we can use <code>get()</code> function for an explicit conversion from <code>auto_ptr&lt;object&gt;</code> to <code>object*</code>. Most resource managing objects have also overloaded the -&gt; and * operators.</p>
 <h1 id="revision-history">Revision History</h1>
 <p>07-18-2019: began book<br />
 07-19-2019: finished item 3 and 4<br />
 07-22-2019: finished items 5-10<br />
+07-24-2019: finished items 11-14<br />
 </p>
 <p><br />
 <br />
