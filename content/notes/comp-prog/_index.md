@@ -31,3 +31,5 @@ title: Competitve Programming Solutions
 
 [Educational Codeforces Round 30 B - Balanced Substring](e30)
 
+[Educational Codeforces Round 55 (Div. 2) C - Multi-Subject Competition](e55c)
+
