@@ -33,3 +33,5 @@ title: Competitve Programming Solutions
 
 [Educational Codeforces Round 55 (Div. 2) C - Multi-Subject Competition](e55c)
 
+[Codeforces Round 565 (Div. 3) C - Lose it!](565c)
+

@@ -1,0 +1,82 @@
+---
+title: Codeforces Round 565 (Div. 3) C - Lose it!
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>565c.tex</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<p><a href="http://codeforces.com/contest/1176/problem/C">Link to problem</a><br />
+<strong>Solution</strong><br />
+For this problem we can create a vector, <code>c</code>, to keep track of the statuses of our sequences. For example c[0] is how many elements our first sequence has. If c[0] = 1 then our first sequence is 4. If c[0]=4 then our first sequence has 4,8,15, and 16 in that order. After this we need an array, <code>transf</code> to keep track of which sequence we’ll be inserting each element into. Finally we should make sure that when we only insert elements into that sequence if it will preserve the correct order. This is the purpose of <code>check</code>. With these three arrays we iterate through the input and either add elements to the appropriate sequence or increment our output variable. Each time we insert an element, we have to increment <code>transf[element]</code> to make sure it will always have the correct value. Afterwards we iterate through <code>c</code> to add all the indexes of c that don’t equal 6 to our output.<br />
+<strong>Code</strong></p>
+<pre><code>#include &lt;bits/stdc++.h&gt;
+typedef int OwO; typedef double UwU;
+#define int long long
+#define double long double
+
+using namespace std;
+
+OwO main(){
+  ios::sync_with_stdio(false);
+  cin.tie(NULL);
+  int n;
+  cin &gt;&gt; n;
+  vector&lt;int&gt; c(n);
+  int check[43];
+  check[4]=0;
+  check[8]=1;
+  check[15]=2;
+  check[16]=3;
+  check[23]=4;
+  check[42]=5;
+  int transf[43];
+  transf[4]=0;
+  transf[8]=0;
+  transf[15]=0;
+  transf[16]=0;
+  transf[23]=0;
+  transf[42]=0;
+  int oup = 0;
+  
+  for(int x = 0; x&lt;n; x++){
+    int t;
+    cin &gt;&gt; t;
+    int idx = transf[t];
+    if(c[idx]!=check[t])
+      oup++;
+    else{
+      c[idx]++;
+      transf[t]++;
+    }
+  }
+
+  int idx = 0;
+  while(idx &lt; n &amp;&amp; c[idx]!=0){
+    if(c[idx]&lt;6)
+      oup += c[idx];
+    idx++;
+  }
+    
+  cout &lt;&lt; oup &lt;&lt; endl;
+
+
+  return 0;
+}</code></pre>
+<p><em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>

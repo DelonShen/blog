@@ -8,6 +8,8 @@ title: Notes
 
 [An Introduction to Tonal Theory(Westergaard)](./itt)
 
+[Engineering: A Compiler(Cooper and Torczon)](./eac)
+
 [Effective C++(Meyers)](./ecpp)
 <!---[The Elements of Statistical Learning(Hastie et al.)](./esl)-->
 
