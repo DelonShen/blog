@@ -3,11 +3,10 @@ title: Notes
 ---
 [An Introduction to Tonal Theory(Westergaard)](./itt)
 
-[Engineering: A Compiler(Cooper and Torczon)](./eac)
+[Fast Fourier Transform(Based on CLRS)](./fft)
 
-[Introduction to Algorithms (CLRS)](./clrs)
+[Effective C++(Meyers)](./ecpp)
 
-[Competitive Programming Solutions/Write-ups](./comp-prog)
 
 
 

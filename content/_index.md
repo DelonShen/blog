@@ -8,4 +8,6 @@ title: Home
 
 WIP
 
+You can find some of my notes [here](./notes)
+
 ### Blog
