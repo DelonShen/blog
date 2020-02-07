@@ -1,0 +1,195 @@
+---
+title: Fast Fourier Transform 
+date: 2019-07-08
+---
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Delon Shen" />
+  <title>notes</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#polynomials-and-the-fft">Polynomials and the FFT</a><ul>
+<li><a href="#representing-polynomials">Representing polynomials</a></li>
+<li><a href="#the-dft-and-fft">The DFT and FFT</a><ul>
+<li><a href="#roots-of-unity">Roots of Unity</a></li>
+<li><a href="#inverse-fast-fourier-transform">Inverse Fast Fourier Transform</a></li>
+</ul></li>
+<li><a href="#efficient-fft-implementation">Efficient FFT Implementation</a></li>
+<li><a href="#parallel-fft-circuit">Parallel FFT Circuit</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="polynomials-and-the-fft">Polynomials and the FFT</h1>
+<p>The fast Fourier transform reduced the complexity of multiplying together two polynomials from <span class="math inline">\(\Theta(n^2)\)</span> to <span class="math inline">\(\Theta(nlgn)\)</span>. <a href="https://www.youtube.com/watch?v=spUNpyF58BY">Neat introduction to fourier transform</a>.<br />
+<strong>Polynomial</strong><span class="math display">\[A(x)=a_0+a_1x+a_2x^2+a_3x^3...a_{n-1}x^{n-1}=\sum_{j=0}^{n-1}a_jx^j=&lt;a_0, a_1,..,a_{n-1}&gt;\]</span> Things you might want to do with polynomials:</p>
+<ul>
+<li><p>Evaluate A(x) at <span class="math inline">\(x_0\)</span></p>
+<ul>
+<li><p>Naively you could compute x for every term but that would be quadratice time</p></li>
+<li><p>Or you could use <strong>Horner’s Rule</strong>: <span class="math inline">\(A(x)=a_0+x(a_1+x(a_2+...x(a_{n-1})))\)</span> giving linear time</p></li>
+</ul></li>
+<li><p>Add polynomials: A(x)+B(x)=C(x)</p>
+<ul>
+<li><p><span class="math inline">\(c_k=a_k+b_k\)</span>, linear time</p></li>
+</ul></li>
+<li><p>Multiply polynomials A(x)B(x)=C(x)</p>
+<ul>
+<li><p><span class="math inline">\(c_k=\sum_{j=0}^ka_jb_{k-j}\)</span> which is O(<span class="math inline">\(n^2\)</span>)</p></li>
+<li><p>This is why we like FFT</p></li>
+</ul></li>
+</ul>
+<h2 id="representing-polynomials">Representing polynomials</h2>
+<p><strong>Coefficient representation</strong> of <span class="math inline">\(A(x)=\sum_{j=0}^{n-1}a_jx^j\)</span> As we showed before you can evaluate this easily using Horner’s rule and adding is trivial. Multiplying however is rough, <span class="math inline">\(\Theta(n^2)\)</span>. The resulting coefficient vector is also called the <strong>convolution</strong> of vectors a and b, the two vectors we’re multiplying.<br />
+<strong>Point-value representaiton</strong> of A(x) of degree-bound n is a set of n <strong>point-value pairs.</strong> <span class="math display">\[\{(x_0,y_0),(x_1,y_1),...(x_{n-1},y_{n-1})\}\]</span> where <span class="math inline">\(x_k\)</span> are distinct and <span class="math inline">\(y_k=A(x_k)\)</span>.<br />
+So we want if we want to find the polynomical representation of this point-value pair we’d want it to satisfy <span class="math inline">\(y_k=A(x_k)\)</span>, in other words <span class="math display">\[a_0x_0+a_1x_0^2+a_3x_0^3+a_4x_0^4+...+a_{n-1}x_0^{n-1}=A(x_0)=y_0\]</span> <span class="math display">\[a_0x_1+a_1x_1^2+a_3x_1^3+a_4x_1^4+...+a_{n-1}x_1^{n-1}=A(x_1)=y_1\]</span> <span class="math display">\[a_0x_2+a_1x_2^2+a_3x_2^3+a_4x_2^4+...+a_{n-1}x_2^{n-1}=A(x_2)=y_2\]</span> <span class="math display">\[. . .\]</span> <span class="math display">\[a_0x_{n-1}+a_1x_{n-1}^2+a_3x_{n-1}^3+a_4x_{n-1}^4+...+a_{n-1}x_{n-1}^{n-1}=A(x_{n-1})=y_{n-1}\]</span> In this form it is pretty simple to see the matrix representation of this system of equations as <span class="math display">\[\begin{bmatrix}
+  1 &amp; x_0 &amp; x_0^2 &amp; ... &amp; x_0^{n-1}\\1 &amp; x_1 &amp; x_1^2 &amp; ... &amp;x_1^{n-1}\\ \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ 1 &amp; x_{n-1} &amp; x_{n-1}^2 &amp; ... &amp; x_{n-1}^{n-1}
+
+&amp;\end{bmatrix}
+\begin{bmatrix}
+  a_0 \\ a_1 \\ \vdots \\ a_{n-1}
+\end{bmatrix}
+=
+\begin{bmatrix}
+  y_0 \\ y_1 \\ \vdots \\ y_{n-1}
+\end{bmatrix}\]</span> The left most matrix is known as the Vandermonde matrix, V, in which <span class="math inline">\(V_{jk} = x_j^k\)</span>. In this form we can see the transformation from coefficient representation to point-value representation as simply a matrix multiplication that will take <span class="math inline">\(O(n^2)\)</span>. In this form we can also see the transformation from point-value representation to coefficient representation as solving a system of linear equations. In math we would multiply by the inverse but since this is CS we’d have to use <a href="https://cp-algorithms.com/linear_algebra/linear-system-gauss.html"><strong>gaussian elimination!</strong></a> This is unfortunately <span class="math inline">\(O(n^3)\)</span> though but it does prove that there is a unique coefficient representation. <em>Note: there is a different proof in the book for the fact that there is a unique coefficient representation but this way made more sense to me. It is less rigorous though.</em><br />
+In point-value representation, addition and multiplication is simply O(n). For example. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{n-1}, y_{n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{n-1}, y&#39;_{n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{n-1}, y_{n-1}+y&#39;_{n-1})\}\]</span> For multiplying polynomials we must take into account that the degree-bound of the resulting polynomial is the degree(A)+degree(B) where A and B are the two inputs. Therefore we must make sure that we have a "extended" point value represention of A and B with 2n point value pairs to make sure we have a unique polynomial of degree bound 2n. <span class="math display">\[A = \{(x_0, y_0), (x_1, y_1), (x_2, y_2), ... , (x_{2n-1}, y_{2n-1})\}\]</span> <span class="math display">\[B = \{(x_0, y&#39;_0), (x_1, y&#39;_1), (x_2, y&#39;_2), ... , (x_{2n-1}, y&#39;_{2n-1})\}\]</span> <span class="math display">\[C = A+B = \{(x_0, y_0+y&#39;_0), (x_1, y_1+y&#39;_1), ... , (x_{2n-1}, y_{2n-1}y&#39;_{2n-1})\}\]</span> The time is still <span class="math inline">\(O(n)\)</span> however.<br />
+So the question now becomes how can we take advantage of this O(n) multiplication of two polynomials in point-value form to multiply two coefficient form polynomials. Our ability to do this efficiently hinges on being able to convert between the two forms efficiently and this is what the FFT gives us if we select our <span class="math inline">\(x_k\)</span>’s carefully.</p>
+<h2 id="the-dft-and-fft">The DFT and FFT</h2>
+<p><em>This section I mostly based of <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2015/lecture-videos/lecture-3-divide-conquer-fft/">the 6.046 lecture on FFT</a></em><br />
+So right now, converting from polynomial representation to point-value representation takes <span class="math inline">\(O(n^2)\)</span> time since it is matrix multiplication. However we can formulate a divide an conquer algorithm that manages do do this conversion in <span class="math inline">\(O(nlgn)\)</span> time if we select of <span class="math inline">\(x_k\)</span> carefully.<br />
+<br />
+So the goal of our algorithm is to compute A(x) for <span class="math inline">\(x\in X\)</span> where A(x) is a polynomial in coefficient representation and X is the set of the <span class="math inline">\(x_k\)</span> that we have chosen. We do this by</p>
+<ol>
+<li><p><strong>Divide:</strong> split the polynomial into even and odd coeficients <span class="math display">\[A_{even}(x)=\sum_{k=0}^{\lceil{\frac n 2 - 1}\rceil}a_{2k}x^k\]</span> <span class="math display">\[A_{odd}(x)=\sum_{k=0}^{\lceil{\frac n 2 - 1}\rceil}a_{2k+1}x^k\]</span></p></li>
+<li><p><strong>Conquer:</strong> Recursively compute <span class="math inline">\(A_{even}(y)\)</span> and <span class="math inline">\(A_{odd}(y)\)</span> for all <span class="math inline">\(y\in X^2, X^2=\{x^2|x\in X\}\)</span>. The reason for using the set <span class="math inline">\(X^2\)</span> will become obvious in the combine step but it just comes down to algebra.</p></li>
+<li><p><strong>Combine:</strong> Combine the terms <span class="math inline">\(A(x)=A_{even}(x^2)+xA_{odd}(x^2)\)</span> for <span class="math inline">\(x\in X\)</span>. In this step we use <span class="math inline">\(A_{(even/odd)}(x^2)\)</span> instead of <span class="math inline">\(A_{(even/odd)}(x)\)</span> since if you look at the original definition of those two summations, the x term is simply <span class="math inline">\(x^k\)</span> which mismatches with the coefficient term. This mismatch is also why we multiply <span class="math inline">\(A_{odd}\)</span> with x. Using <span class="math inline">\(A_{even/odd}(x^2)\)</span> is the reason we use the set of <span class="math inline">\(X^2\)</span> instead of <span class="math inline">\(X\)</span> in the conquer step.</p></li>
+</ol>
+<p>So lets try running this algorithm through a concrete example since I was a bit confused by it at first and I guess it would be useful. <span class="math display">\[A(x)=3x^2+9x^3+4x^5, X=\{2,3\}\]</span> <span class="math display">\[A_{even}=0+3x \rightarrow \text{Sub-problem 1}\]</span> <span class="math display">\[A_{odd}=0+9x+4x^2 \rightarrow \text{Sub-problem 2}\]</span></p>
+<p><strong>Sub-Problem 1</strong> <span class="math display">\[A_1=3x, X=\{4,9\}\]</span> <span class="math display">\[A_{1,even}=0\]</span> <span class="math display">\[A_{1,odd}=3\]</span> <span class="math display">\[\Rightarrow A_1=0+3x=\{12, 27\}\]</span> <strong>Sub-Problem 2</strong> <span class="math display">\[A_2=9x+4x^2,X=\{4,9\}\]</span> <span class="math display">\[A_{2,even}=0+4x\rightarrow\text{Sub-problem 3}\]</span> <span class="math display">\[A_{2,odd}=9\]</span> <span class="math display">\[\Rightarrow A_2=A_{2,even}+xA_{2,odd}\]</span> <strong>Sub-problem 3</strong> <span class="math display">\[A_3=4x,X=\{16,81\}\]</span> <span class="math display">\[A_{3,even}=0\]</span> <span class="math display">\[A_{3,odd}=4\]</span> <span class="math display">\[\Rightarrow A_3=0+4x=\{64, 324\}\]</span> <span class="math display">\[\Rightarrow A_2 = \{64+9*4,\text{ } 324+9*9\}=\{100, 405\}\]</span> <span class="math display">\[\Rightarrow A=\{12+2*100,\text{ } 27+3*405 \}=\{212, 1242\}\]</span> <span class="math display">\[A(2)=212\]</span> <span class="math display">\[A(3)=1242\]</span></p>
+<p>Hopefully that was helpful, it makes a lot more sense to me now at least. Anyway, lets try analyzing its efficiency. The recurrence relation of this algorithm can be written as <span class="math display">\[T(n, |X|)= 2\cdot T(\frac n 2, |X|)+O(n+ |X|)\]</span> At each step, the degree bound of sub-problems is halved but the size of the set <span class="math inline">\(X\)</span> remains the same. The <span class="math inline">\(O(n+|X|)\)</span> term comes from the partition(divide) step which is <span class="math inline">\(O(n)\)</span> and the conquer step which depends on the size of X which means it is <span class="math inline">\(O(|X|)\)</span> thus giving <span class="math inline">\(O(n+|X|)\)</span>. Also we know that at the root, <span class="math inline">\(n=|X|\)</span> if we want a valid point-value representation. This means <span class="math display">\[T(n, |X|)=2\cdot T(\frac n 2, |X|)+O(|X|)\]</span> It’s pretty obvious from this equation that this is not a very efficient algorithm since at every level there will be a cost of <span class="math inline">\(2^i\cdot O(n)\)</span> where i the level number for <span class="math inline">\(lgn\)</span> levels. In other words <span class="math display">\[\begin{aligned}
+  T(n,|X|)&amp;=\sum_{i=0}^{lgn} n\cdot2^i\\
+  &amp;=n\sum_{u=1}^n u,\text{ } u=2^i\\
+  &amp;=n\cdot O(n^2)\\
+  &amp;=O(n^3)\end{aligned}\]</span> <em>Note: Erik Demaine says it’s <span class="math inline">\(O(n^2)\)</span> and he’s probably definitely right but this is the answer I got and I’m not sure where I went wrong so I’ll just leave it here for now. What matters is that the algorithm is not great right now.</em><br />
+<br />
+The algorithm isn’t great and it’s because this <span class="math inline">\(|X|\)</span> term remains the same. We should notice that if <span class="math inline">\(|X|\)</span> <strong>collapsed</strong> for each subproblem, that is <span class="math inline">\(|X^2|=\frac {|X|} 2\)</span>, or <span class="math inline">\(|X|\)</span> was halved along with n and at each division step, then the recurrence relation would simply be <span class="math display">\[T(n)=2T(\frac n 2)+O(n)\]</span> It is easy to see that this means <span class="math inline">\(T(n)=O(nlgn)\)</span>. We can achieve this feature of "collapsing" by choosing our <span class="math inline">\(x_k\)</span> values very carefully by utilizing <strong>Roots of Unity</strong>.</p>
+<h3 id="roots-of-unity">Roots of Unity</h3>
+<p>We can construct a collapsing set with the power of square roots. For example, the <span class="math inline">\(X^2\)</span> is collapsing if <span class="math inline">\(X=\{1, -1\}\)</span>. And this set in turn is the <span class="math inline">\(X^2\)</span> set of <span class="math inline">\(\{1,-1,i,-i\}\)</span>. All of these points are spaced out evenly on the unit circle in the complex plane. We can find larger sets with this collapsing property by utilizing the equation <span class="math display">\[cos(\theta)+isin(\theta)=e^{i\theta}\]</span> with <span class="math display">\[\theta=2k\pi/n, k=0,1,2,...,n-1\]</span> From the equation <span class="math inline">\(e^{i\theta}\)</span> we can see that if we square a number we simply double the angle on the unit cirlce since <span class="math inline">\((e^{i\theta})^2=e^{i2\theta}\)</span>. However what if we double an angle if it’s bigger than <span class="math inline">\(\pi\)</span>? We would have gone around the entire circle and passed <span class="math inline">\(\theta=0\)</span>. In otherwords <span class="math inline">\(2\cdot \frac{3\pi}{2}=3\pi=\pi\)</span>. This lets us see that <span class="math inline">\((e^{i\theta})^2\)</span> actually equals <span class="math inline">\(e^{i2\theta\text{ mod }2\pi}\)</span> which gives the set of roots of unity the collapsing feature. For example, in the set <span class="math inline">\(X=\{1,-1,i,-i\}\)</span> we can figure out the angles to be <span class="math inline">\(\{0,\pi,\pi/2,3\pi/2\}\)</span> from Euler’s formula. But once we double the angles(aka finding the set <span class="math inline">\(X^2\)</span>) we get the set of angles of <span class="math inline">\(\{0, 2\pi, \pi, 3\pi\}=\{0,0,\pi,\pi\}\)</span>.<br />
+<br />
+From all this we can see that setting <span class="math inline">\(x_k=e^{i2\pi k/n}\)</span> gives us a collapsing <span class="math inline">\(X\)</span> set thus giving <span class="math inline">\(O(nlgn)\)</span> conversion from coefficient representation to point-value representation. <em>The Fast Fourier Transform is simply the divide and conquer algorithm we previously described with this special set of <span class="math inline">\(x_k\)</span> that we have chosen</em> Now all we have to do is figure out how to convert from point-value representation to coefficient representation efficiently and we’ll have a fast polynomial multiplication algorithm. But before we find the inverse transform lets summarize and introduce some notation to make our life easier. Fast polynomial multiplication can be summarized as<br />
+We want to multiply two polynomials, A and B store the result in C. <span class="math display">\[A^*=FFT(A)\]</span> <span class="math display">\[B^*=FFT(B)\]</span> <span class="math display">\[C^*_k=A^*_kB^*_k\forall k\]</span> <span class="math display">\[C=IFFT(C^*)\]</span> Where IFFT is the inverse fast fourier transform. As we will see, this is very similar to the FFT.<br />
+<br />
+</p>
+<h3 id="inverse-fast-fourier-transform">Inverse Fast Fourier Transform</h3>
+<p>So converting from coefficient to point-value representation is simply the matrix product of the V, the Vandermonde matrix, and a, the coefficient matrix which we simplified with the FFT. The inverse FFT then is simply multiplying by <span class="math inline">\(V^{-1}\)</span>. This is pretty simple to see: <span class="math display">\[V^{-1}(V A)=V^{-1}A^*\]</span> <span class="math display">\[A=V^{-1}A^*\]</span> Luckily, <span class="math inline">\(V^{-1}\)</span> has a special form: <span class="math display">\[V^{-1}=\bar{V}/n\]</span> where <span class="math inline">\(\bar{V}\)</span> is the complex conjugate of V. Recall that <span class="math inline">\(V_{jk}=x_j^k=e^{ijk2\pi/n}\)</span> and the complex conjugate of <span class="math inline">\(e^{ijk2\pi/n}\)</span> is <span class="math inline">\(e^{-ijk2\pi/n}\)</span>. Thus we have the equation for the Inverse FFT: <span class="math display">\[(nV^{-1})A^*=nA\]</span> Now all there is to do is prove that neat formula for <span class="math inline">\(V^{-1}\)</span> and we’ll have a <span class="math inline">\(O(nlgn)\)</span> algorithm for polynomial multiplication.<br />
+<br />
+<strong>Prove that <span class="math inline">\(V^{-1}=\bar{V}/n\)</span></strong><br />
+To do this we will prove that <span class="math inline">\(V\bar{V}=nI\)</span> where I is the identity matrix. We’ll let <span class="math inline">\(P=V\bar{V}\)</span>. This means that <span class="math display">\[\begin{aligned}
+  P_{jk}&amp;=\sum_{m=0}^{n-1}e^{ij2\pi m/n}e^{-ik2\pi m/n}\\
+  &amp;=\sum_{m=0}^{n-1}e^{i(j-k)2\pi m/n}\end{aligned}\]</span> We know that if j=k then <span class="math inline">\(P_{jk}\)</span> would simply be <span class="math inline">\(\sum_{m=0}^{n-1}1\)</span>. If not then it becomes a geometric series. <span class="math display">\[x=e^{i(j-k)2\pi/n}\]</span> <span class="math display">\[\begin{aligned}
+  P_{jk}&amp;=\sum_{m=0}^{n-1}x^m\\
+  &amp;=\frac{x^n-1}{x-1}\end{aligned}\]</span> Now remember that <span class="math inline">\(e^{i2\pi}=1\)</span> which means <span class="math display">\[P_{jk}=\frac{1^{(j-k)}-1}{aribitrary}=0\]</span> this lets us see that <span class="math inline">\(P=nI\)</span> which proves that <span class="math inline">\(V^{-1}=\bar{V}/n\)</span>.</p>
+<h2 id="efficient-fft-implementation">Efficient FFT Implementation</h2>
+<p><em>Note: A lot of the material in this section is in fact not from the book but from <a href="https://cp-algorithms.com/algebra/fft.html">here</a>. They seem to hit on the same main points.</em><br />
+We’ll start by examining a recursive implementation of the FFT and then see how we can improve upon it.</p>
+<pre><code>#define PI 3.14159265358979323846
+void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
+  //Base case of Recursion
+  int n = a.size();
+  if(n==1)
+    return;
+
+  //Divide
+  vector&lt;complex&lt;double&gt;&gt; a_even(n/2);
+  vector&lt;complex&lt;double&gt;&gt; a_odd(n/2);
+
+  for(int i = 0; 2*i&lt;n; i++){
+    a_even[i]=a[2*i];
+    a_odd[i]=a[2*i+1];
+  }
+
+  fft(a_even);
+  fft(a_odd);
+
+  //Conquer
+  double ang = 2*PI/n;
+  complex&lt;double&gt; x(1); //aka e^0 or when angle = 0
+  complex&lt;double&gt; xn(cos(ang), sin(ang)); //compute difference between sequential x_k values
+  for(int i = 0; 2 * i &lt; n; i++){
+    a[i] = a_even[i]+w*a_odd[i];
+    a[i+n/2] = a_even[i]-w*a_odd[i];
+    w *= wn; //adds angle difference (remember: e^k+e^j = e^(k+j) and
+             //we&#39;re working in the form e^{i\theta})
+  }
+}</code></pre>
+<p>The inverse fourier transform is mostly the same as this implementation except with one or two extra lines thrown in. To improve this algorithm we can first try to see if we can do everything in place. In other words, can we get rid the of the vectors a_even and a_odd.<br />
+<br />
+The thing to notice here is how the bits of the position corresponds to how the vector is divided into a_even and a_odd. Lets look at an example of a vector with size=8: <span class="math display">\[A=\{a_{0000}, a_{0001}, a_{0010}, a_{0011}, a_{0100}, a_{0101}, a_{0110}, a_{0111}\}\]</span> I put the binary representation of the possition vector to hopefully make the relationship clear.<br />
+After the first recursive call: <span class="math display">\[A_{even}=\{a_{000{\bf0}}, a_{001{\bf0}}, a_{010{\bf0}}, a_{011{\bf0}}\}\]</span> <span class="math display">\[A_{odd}=\{a_{000{\bf1}}, a_{001{\bf1}}, a_{010{\bf1}}, a_{011{\bf1}}\}\]</span> Notice how the lowest bit is the same for all elements in <span class="math inline">\(A_{even}\)</span> and <span class="math inline">\(A_{odd}\)</span>. Namely that the lowest bit of the position is 0 in <span class="math inline">\(A_{even}\)</span> and 1 in <span class="math inline">\(A_{odd}\)</span>. Now lets looks at the next recursive level for <span class="math inline">\(A_{even}\)</span>. It will be the same trend for <span class="math inline">\(A_{odd}\)</span>. <span class="math display">\[A_{even}=B\]</span> <span class="math display">\[B_{even}=\{a_{00{\bf0}0}, a_{01{\bf0}0}\}\]</span> <span class="math display">\[B_{odd}=\{a_{00{\bf1}0}, a_{01{\bf1}0}\}\]</span> Now the second-lowest bit is used to divide up <span class="math inline">\(A_{even}\)</span> into it’s sub-matricies. The pattern should be clear at this point but lets just go one more level. <span class="math display">\[B_{even}=C\]</span> <span class="math display">\[C_{even}=\{a_{0{\bf0}00}\}\]</span> <span class="math display">\[C_{odd}=\{a_{0{\bf1}00}\}\]</span> And now the third-lowest bit is used to divide up the vector.<br />
+We can use this property to rearrange the matrix into a more favorable order through something called <strong>bit-reversal permutation</strong>. Basically, we reverse all the positions n-bit representation and sort the vector based on these reversed values. So our previous example of 8 values would turn from <span class="math display">\[A=\{a_{0000}, a_{0001}, a_{0010}, a_{0011}, a_{0100}, a_{0101}, a_{0110}, a_{0111}\}\]</span> into <span class="math display">\[A=\{a_{0000}, a_{0100}, a_{0010}, a_{0110}, a_{0001}, a_{0101}, a_{0011}, a_{0111}\}\]</span> or more clearly <span class="math display">\[A=\{a_{0}, a_{4}, a_{2}, a_{6}, a_{1}, a_{5}, a_{3}, a_{7}\}\]</span> Now each subproblem is grouped with its constituents which will make doing the FFT in-place much simpler. We would simply be processing things in groups of 2, then 4, and then 8. This allows us to also get rid of recursion.</p>
+<pre><code>#define PI 3.14159265358979323846
+int reverse(int n, int lgn){
+  //lgn is the number of bits in n
+  int out=0;
+  for(int i = 0; i&lt;lgn; i++){
+    if(n &amp; (1 &lt;&lt; i)) //if the ith bit is set
+      out |= 1 &lt;&lt; (lgn-1-i); //we set the (lgn-1-i) bit
+                             //of the return value
+  }
+  return out;
+}
+void fft(vector&lt;complex&lt;double&gt;&gt;&amp; a){
+  int n=a.size();
+  int lgn=0;
+
+  //fancy log_2(n)
+  while((1&lt;&lt;lgn) &lt; n)
+    lgn++;
+
+  //bit-reversal permutation
+  for(int i = 0; i&lt;n; i++){
+    int temp = reverse(i, lgn);
+    if(i &lt; temp)
+      swap(a[i], a[temp]);
+  }
+  //grp is the size of the groups 
+  //that we&#39;ll be processing. 
+  //grp=2,4,8 (basically the size 
+  //for each levels of recursion)
+  for(int grp=2; grp&lt;=n; grp&lt;&lt;1){
+    double ang = 2 * PI / grp;
+    complex&lt;double&gt; wn(cos(ang), sin(ang)); //delta between angels
+    //now we&#39;re processing each &quot;group&quot;
+    //this is what recursion used to do
+    for(int i=0; i&lt;n; i+=grp){
+      complex&lt;double&gt; w(1); //angle = 0
+      //in this next loop we&#39;re doing the &quot;conquer&quot; step
+      for(int j=0; j&lt;grp/2; j++){
+        complex&lt;double&gt; u = a[i+j], v=a[i+j+grp/2]*w;
+        a[i+j] = u+v;
+        a[i+j+grp/2] = u-v;
+        w *= wn;
+      }
+    }
+  }
+}</code></pre>
+<br />
+<em>Think you found a mistake? You probably did. Let me know at <a href="mailto:hi@delonshen.com">hi@delonshen.com</a> if you want.</em></p>
+</body>
+</html>
