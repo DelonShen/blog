@@ -1,1 +1,3 @@
-Nothing seems to be here
+---
+title: Blog
+---

@@ -1,4 +1,0 @@
-pandoc --mathjax --toc --standalone  notes.tex -o _index.html
-cat header > test
-cat _index.html >> test
-cp test ~/blog/content/notes/itt/_index.html

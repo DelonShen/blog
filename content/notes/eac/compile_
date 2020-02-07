@@ -1,5 +1,0 @@
-pandoc --mathjax --toc  notes.tex -o _index.html
-cat header > test
-cat _index.html >> test
-cp * ~/blog/content/notes/eac/
-cp test ~/blog/content/notes/eac/_index.html
