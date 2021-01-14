@@ -1,11 +1,6 @@
 ---
 title: Home
 ---
-
-
-
 # Delon Shen
 
-WIP
-
-### Blog
+Hi, I keep some [notes](./notes) here. 
