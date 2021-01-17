@@ -1,5 +1,6 @@
 ---
 title: Home
+Description: "Personal website for Delon Shen. hi@delonshen.com"
 ---
 # Delon Shen
 
