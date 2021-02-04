@@ -15,6 +15,9 @@ title: Notes
 - *Also contains some notes on Wald's book* \\
 - *Some older notes from me bungling my way through [Alexander Maloney's lectures](http://www.physics.mcgill.ca/~maloney/514/514_2010/index.html) can also be found [here](./phy387m/maloney.pdf)*
 
+[Information Theory](./information_theory/notes.pdf)\\
+- *Right now mostly notes on Witten's [lecture](https://arxiv.org/pdf/1805.11965.pdf). Hopefully more later*
+
 [8.044: Statistical Physics I](./8.044/notes.pdf)\\
 - *Course on [MIT OCW](https://ocw.mit.edu/courses/physics/8-044-statistical-physics-i-spring-2013/index.htm) given by Thomas Greytak* 
 
