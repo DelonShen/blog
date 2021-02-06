@@ -19,7 +19,7 @@ title: Notes
 - *Right now mostly notes on Witten's [lecture](https://arxiv.org/pdf/1805.11965.pdf). Hopefully more later*
 
 [8.044: Statistical Physics I](./8.044/notes.pdf)\\
-- *Course on [MIT OCW](https://ocw.mit.edu/courses/physics/8-044-statistical-physics-i-spring-2013/index.htm) given by Thomas Greytak* 
+- *Course [here](https://ocw.mit.edu/courses/physics/8-044-statistical-physics-i-spring-2013/index.htm) given by Thomas Greytak* 
 
 [Fast Fourier Transform(2019-07)](./fft) \\
 - *Some notes on FFT. Testing LaTex to HTML conversion with pandoc*
