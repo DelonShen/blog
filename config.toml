@@ -20,10 +20,6 @@ footnotereturnlinkcontents = "↩"
     url = "/notes/"
     weight = 3
 
-[[menu.feed]]
-    name = "Subscribe"
-    url = "/index.xml"
-
 [params]
     description = "Delon Shen"
     footer = "[github](https://github.com/delonshen) | [email](mailto:hi@delonshen.com)"
