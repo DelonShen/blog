@@ -17,14 +17,14 @@ Course at UT Austin given by Vadim Kaplunovsky Spring 2021. Also contains some m
 Course at UT Austin given by Richard Matzner Spring 2021. Also contains some notes on Wald's book. Some older notes from me bungling my way through [Alexander Maloney's lectures](http://www.physics.mcgill.ca/~maloney/514/514_2010/index.html) can also be found [here](./phy387m/maloney.pdf)
 
  <summary>
+[Physics 221AB: Quantum Mechanics](./221ab/notes.pdf)
+ </summary>
+Course at UC Berkeley given by Robert Littlejohn during Fall 2020-Spring 20201. All the [materials for the course](http://bohr.physics.berkeley.edu/classes/221/2021/221.html) (including lecture videos) are being posted online so I thought I'd help myself.
+
+ <summary>
 [Information Theory](./information_theory/notes.pdf)
  </summary>
 Some notes on Witten's [lecture](https://arxiv.org/pdf/1805.11965.pdf). More notes on Wilde's *Quantum Information Theory*
-
-<summary>
-[8.044: Statistical Physics I](./8.044/notes.pdf)
-</summary>
-Course [here](https://ocw.mit.edu/courses/physics/8-044-statistical-physics-i-spring-2013/index.htm) given by Thomas Greytak.
 
 <summary>
 [Fast Fourier Transform(2019-07)](./fft) 
