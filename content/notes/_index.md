@@ -19,7 +19,7 @@ Course at UT Austin given by Richard Matzner Spring 2021. Also contains some not
  <summary>
 [Information Theory](./information_theory/notes.pdf)
  </summary>
-Some notes on Witten's [lecture](https://arxiv.org/pdf/1805.11965.pdf). More notes on Wilde's *Quantum Information Theory*
+Some notes on Witten's [lecture](https://arxiv.org/pdf/1805.11965.pdf). More notes on Wilde's *Quantum Information Theory* and MacKay's *Information Theory, Inference, and Learning Algorithms*
 
 <summary>
 [Fast Fourier Transform(2019-07)](./fft) 
